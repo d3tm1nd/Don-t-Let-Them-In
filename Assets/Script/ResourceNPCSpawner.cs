@@ -3,18 +3,21 @@ using System.Collections;
 
 public class ResourceNPCSpawner : MonoBehaviour
 {
-    [Header("Outside NPC (ตัวแรก)")]
+    [Header("Outside NPC")]
     public GameObject outsideNPCPrefab;
     public Transform outsideSpawnPoint;
 
-    [Header("Next Outside NPC (ตัวใหม่)")]
+    [Header("Next Outside NPC")]
     public GameObject nextOutsideNPCPrefab;
 
-    [Header("Spawn Limits & Delays")]
-    [Tooltip("จำนวนสูงสุดของ NPC ที่ spawn")]
+    [Header("Spawn Settings")]
     public int maxNPCs = 5;
-    [Tooltip("Delay ก่อน spawn NPC ตัวใหม่")]
     public float spawnDelay = 3f;
+
+    [Header("Stranger Settings")]
+    public GameObject strangerPrefab;   // 🔥 FIX: เพิ่ม field นี้เพื่อแก้ CS0103
+    [Range(0f, 100f)]
+    public float strangerChance = 30f;
 
     [Header("Audio")]
     public AudioClip knockSound;
@@ -26,7 +29,6 @@ public class ResourceNPCSpawner : MonoBehaviour
     void Start()
     {
         audioSource = GetComponent<AudioSource>() ?? gameObject.AddComponent<AudioSource>();
-
         StartCoroutine(SpawnOutside());
     }
 
@@ -34,53 +36,31 @@ public class ResourceNPCSpawner : MonoBehaviour
     {
         yield return new WaitForSeconds(1f);
 
-        GameObject npc = Instantiate(
-            outsideNPCPrefab,
-            outsideSpawnPoint.position,
-            outsideSpawnPoint.rotation
-        );
-
-        ResourceDoorNPC doorNPC = npc.GetComponent<ResourceDoorNPC>();
-        if (doorNPC != null)
-        {
-            doorNPC.spawner = this;
-        }
+        GameObject npc = Instantiate(outsideNPCPrefab, outsideSpawnPoint.position, outsideSpawnPoint.rotation);
+        npc.GetComponent<ResourceDoorNPC>().spawner = this;
 
         spawnedCount++;
-        Debug.Log($"✅ Spawn Outside NPC (Initial) | Count: {spawnedCount}/{maxNPCs}");
-
-        if (knockSound != null)
-            audioSource.PlayOneShot(knockSound);
+        if (knockSound != null) audioSource.PlayOneShot(knockSound);
     }
 
     public IEnumerator SpawnNewOutsideNPC()
     {
-        if (spawnedCount >= maxNPCs)
-        {
-            Debug.Log($"🚫 ถึง limit NPC ({maxNPCs}) แล้ว!");
-            yield break;
-        }
+        if (spawnedCount >= maxNPCs) yield break;
 
         yield return new WaitForSeconds(spawnDelay);
 
-        GameObject prefabToSpawn = nextOutsideNPCPrefab != null ? nextOutsideNPCPrefab : outsideNPCPrefab;
+        GameObject prefabToSpawn = nextOutsideNPCPrefab != null ? nextOutsideNPCPrefab : outsideNPCPrefab;  // 🔥 FIX: เปลี่ยนชื่อเป็น prefabToSpawn
 
-        GameObject npc = Instantiate(
-            prefabToSpawn,
-            outsideSpawnPoint.position,
-            outsideSpawnPoint.rotation
-        );
-
-        ResourceDoorNPC doorNPC = npc.GetComponent<ResourceDoorNPC>();
-        if (doorNPC != null)
+        // Stranger Logic
+        if (Random.value * 100f < strangerChance && strangerPrefab != null)
         {
-            doorNPC.spawner = this;
+            prefabToSpawn = strangerPrefab;
         }
 
-        spawnedCount++;
-        Debug.Log($"✅ Spawn New Outside NPC | Count: {spawnedCount}/{maxNPCs}");
+        GameObject npc = Instantiate(prefabToSpawn, outsideSpawnPoint.position, outsideSpawnPoint.rotation);
+        npc.GetComponent<ResourceDoorNPC>().spawner = this;
 
-        if (knockSound != null)
-            audioSource.PlayOneShot(knockSound);
+        spawnedCount++;
+        if (knockSound != null) audioSource.PlayOneShot(knockSound);
     }
 }

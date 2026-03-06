@@ -119,6 +119,86 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &98381349
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 98381352}
+  - component: {fileID: 98381351}
+  - component: {fileID: 98381353}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &98381351
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 98381349}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ae27f51794558145b377b92418893c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PersistentGameManager
+  strangerAccepted: 0
+  currentDay: 1
+--- !u!4 &98381352
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 98381349}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -9.5986, y: 0, z: -0.2283}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &98381353
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 98381349}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5458fa436f6f58942aa59151c3ede576, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PhaseManager
+  currentPhase: 0
+  energy: 4
+  maxNPCs: 2
+  currentDay: 1
+  NPCAcceptedCount: 0
+  DinnerCompleted: 0
+  daySceneName: DayScene
+  daySceneName2: DayScene2
+  nightSceneName: NightScene
+  morningSceneName: MorningScene
+  useDayScene2AfterMorning: 0
+  usePerDayScenes: 1
+  dayScenes:
+  - DayScene
+  - DayScene2
+  nightScenes:
+  - NightScene
+  - NightScene2
+  morningScenes:
+  - MorningScene
+  - MorningScene2
 --- !u!1 &101430427
 GameObject:
   m_ObjectHideFlags: 0
@@ -587,9 +667,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NPCSpawner
   outsideNPCPrefab: {fileID: 3219559610544741984, guid: 1be9cd63a3f47f745b0152c6e5961c86, type: 3}
   outsideSpawnPoint: {fileID: 1175958390}
-  nextOutsideNPCPrefab: {fileID: 3219559610544741984, guid: 4b87217a36cdba8428e6cf8ec0094594, type: 3}
-  insideNPCPrefab: {fileID: 69851806298905859, guid: 44d5a45aeabbcd34f94b0007112ad402, type: 3}
-  newInsideNPCPrefab: {fileID: 69851806298905859, guid: 18db90ce80f14a94e8a8be988583a15f, type: 3}
+  nextOutsideNPCPrefab: {fileID: 3219559610544741984, guid: 1be9cd63a3f47f745b0152c6e5961c86, type: 3}
+  insideNPCPrefab: {fileID: 69851806298905859, guid: 8fa14cec97718ac41b8984271917dcbe, type: 3}
+  newInsideNPCPrefab: {fileID: 69851806298905859, guid: 507f3fc81b20f184eacd33394bfcc83a, type: 3}
   insideSpawnPoints:
   - {fileID: 101430428}
   - {fileID: 2053591452}
@@ -1794,7 +1874,7 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 4368363879712701751, guid: 214b673e61a328f4b97a4c1f1bba63d3, type: 3}
+    - target: {fileID: 4597862506344497799, guid: 214b673e61a328f4b97a4c1f1bba63d3, type: 3}
       propertyPath: spawner
       value: 
       objectReference: {fileID: 675346339}
@@ -1919,3 +1999,4 @@ SceneRoots:
   - {fileID: 431994400}
   - {fileID: 1752937987}
   - {fileID: 1886558555}
+  - {fileID: 98381352}

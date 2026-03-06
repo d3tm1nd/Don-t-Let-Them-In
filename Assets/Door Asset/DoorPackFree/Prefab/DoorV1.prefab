@@ -230,7 +230,7 @@ GameObject:
   - component: {fileID: 6424270456704860672}
   - component: {fileID: 3202145866065056581}
   - component: {fileID: 1786197215125314420}
-  - component: {fileID: 4368363879712701751}
+  - component: {fileID: 4597862506344497799}
   m_Layer: 6
   m_Name: DoorV1
   m_TagString: Untagged
@@ -376,7 +376,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &4368363879712701751
+--- !u!114 &4597862506344497799
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -385,11 +385,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 6424270456704572960}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0e6e8cc815f1b004d87190676a2a7e76, type: 3}
+  m_Script: {fileID: 11500000, guid: 1d770daa106294249b8a5b3c77f3449e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorToNight
   spawner: {fileID: 0}
-  nightSceneName: NightScene
   doorOpenSound: {fileID: 8300000, guid: c4f5985e35afbbc48be28d7ca5f371bf, type: 3}
 --- !u!1 &8321235024012218410
 GameObject:

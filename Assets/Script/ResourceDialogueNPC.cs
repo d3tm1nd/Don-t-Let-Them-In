@@ -88,14 +88,14 @@ public class ResourceDialogueManager : MonoBehaviour
         Unfreeze();
     }
 
-    void Freeze()
+    public void Freeze()
     {
         Time.timeScale = 0f;
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
     }
 
-    void Unfreeze()
+    public void Unfreeze()
     {
         Time.timeScale = 1f;
         Cursor.visible = false;

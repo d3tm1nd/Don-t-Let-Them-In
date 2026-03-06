@@ -55,6 +55,10 @@ public class ResourceDoorNPC : MonoBehaviour, IInteractable
             spawner.StartCoroutine(spawner.SpawnNewOutsideNPC());
         }
 
+        PhaseManager.Instance.NPCAcceptedCount++;
+        if (PhaseManager.Instance.NPCAcceptedCount >= PhaseManager.Instance.maxNPCs)
+            Debug.Log("รับ NPC ครบแล้ว!");
+
         Destroy(gameObject, 1.5f);
     }
 
