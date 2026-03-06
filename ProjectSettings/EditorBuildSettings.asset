@@ -6,11 +6,17 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: c2e2f9cc649ec6f41a05cd894522a787
+  - enabled: 1
     path: Assets/Scenes/DayScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
     path: Assets/Scenes/NightScene.unity
     guid: c3d99ce000d2e504597d9d831e59ee14
+  - enabled: 1
+    path: Assets/Scenes/MorningScene.unity
+    guid: ed1b3fd3a42aad54aa3ecc68e6ca9349
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
