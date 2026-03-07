@@ -66,7 +66,7 @@ public class PhaseManager : MonoBehaviour
             LoadNight();
         }
         // Night -> Morning (วันถัดไป)
-        else if (currentPhase == GamePhase.Night && DinnerCompleted)
+        else if (currentPhase == GamePhase.Night)
         {
             LoadMorning();
         }

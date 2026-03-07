@@ -192,13 +192,10 @@ MonoBehaviour:
   usePerDayScenes: 1
   dayScenes:
   - DayScene
-  - DayScene2
   nightScenes:
   - NightScene
-  - NightScene2
   morningScenes:
   - MorningScene
-  - MorningScene2
 --- !u!1 &101430427
 GameObject:
   m_ObjectHideFlags: 0
