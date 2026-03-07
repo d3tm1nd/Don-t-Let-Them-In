@@ -172,8 +172,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 0.31367433, y: 0.7849871, z: 1}
+  m_Center: {x: -0.34316283, y: 0.10750912, z: -1.8985072e-15}
 --- !u!114 &5814916769082967817
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -188,6 +188,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PeepHoleInteract
   peepViewPoint: {fileID: 2797896827447717785}
   peepFOV: 30
+  disableWhilePeeping: []
 --- !u!1 &6130508499361754837
 GameObject:
   m_ObjectHideFlags: 0

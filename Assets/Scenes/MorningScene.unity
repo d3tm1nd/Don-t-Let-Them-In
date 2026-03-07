@@ -1392,7 +1392,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1088702855843154404, guid: c7ec6d2d48286d54682be4dc049fbabb, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1
+      value: 1.807
       objectReference: {fileID: 0}
     - target: {fileID: 1088702855843154404, guid: c7ec6d2d48286d54682be4dc049fbabb, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1429,10 +1429,6 @@ PrefabInstance:
     - target: {fileID: 2153462375637198163, guid: c7ec6d2d48286d54682be4dc049fbabb, type: 3}
       propertyPath: m_Name
       value: Player
-      objectReference: {fileID: 0}
-    - target: {fileID: 3794102852134603898, guid: c7ec6d2d48286d54682be4dc049fbabb, type: 3}
-      propertyPath: interactLayer.m_Bits
-      value: 64
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2063,10 +2059,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 4368363879712701751, guid: 214b673e61a328f4b97a4c1f1bba63d3, type: 3}
-      propertyPath: spawner
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 6424270456704572960, guid: 214b673e61a328f4b97a4c1f1bba63d3, type: 3}
       propertyPath: m_Name
       value: DoorV1
