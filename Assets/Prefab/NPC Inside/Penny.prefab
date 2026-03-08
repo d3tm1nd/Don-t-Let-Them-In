@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1198601308881142401}
   - component: {fileID: -5633195881394615927}
   m_Layer: 6
-  m_Name: NPC Normal Inside
+  m_Name: Penny
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

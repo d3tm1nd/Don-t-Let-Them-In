@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 8672580769005611680}
   - component: {fileID: 7300801733724778638}
   m_Layer: 6
-  m_Name: NPC Normal Outside
+  m_Name: Jone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -127,7 +127,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3b5187de814f884ab8af3f0e0deb2d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorNPC
-  dialogueText: Please Let me in, I really have no choice.
+  dialogueText: Please Let me in, I'm not dangerous.
   insultText: I can't be around here too many times.
   spawner: {fileID: 0}
   insidePrefab: {fileID: 0}
