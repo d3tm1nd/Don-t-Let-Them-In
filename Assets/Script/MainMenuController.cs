@@ -34,8 +34,8 @@ public class MainMenuController : MonoBehaviour
 
     void StartGame()
     {
-        Debug.Log("Start Game: Load Phase 1 (Morning Scene)");
-        SceneManager.LoadScene("MorningScene"); // เปลี่ยนเป็นชื่อ Scene Phase 1 ของคุณ
+        Debug.Log("Start Game: Load Phase 1 (Day Scene)");
+        SceneManager.LoadScene("DayScene"); // เปลี่ยนเป็นชื่อ Scene Phase 1 ของคุณ
     }
 
     void ExitGame()
