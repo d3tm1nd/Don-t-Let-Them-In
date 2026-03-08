@@ -721,9 +721,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NPCSpawner
   outsideNPCPrefab: {fileID: 3219559610544741984, guid: 1be9cd63a3f47f745b0152c6e5961c86, type: 3}
   outsideSpawnPoint: {fileID: 1175958390}
-  nextOutsideNPCPrefab: {fileID: 3219559610544741984, guid: 1be9cd63a3f47f745b0152c6e5961c86, type: 3}
-  insideNPCPrefab: {fileID: 69851806298905859, guid: 8fa14cec97718ac41b8984271917dcbe, type: 3}
-  newInsideNPCPrefab: {fileID: 69851806298905859, guid: 507f3fc81b20f184eacd33394bfcc83a, type: 3}
+  nextOutsideNPCPrefab: {fileID: 3219559610544741984, guid: bd6785b96941a6e4fa04c41ae6aef85c, type: 3}
+  insideNPCPrefab: {fileID: 69851806298905859, guid: 44d5a45aeabbcd34f94b0007112ad402, type: 3}
+  newInsideNPCPrefab: {fileID: 69851806298905859, guid: 8fa14cec97718ac41b8984271917dcbe, type: 3}
   insideSpawnPoints:
   - {fileID: 101430428}
   - {fileID: 2053591452}
@@ -1928,6 +1928,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2926021153334400302, guid: 214b673e61a328f4b97a4c1f1bba63d3, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2926021153334400302, guid: 214b673e61a328f4b97a4c1f1bba63d3, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 6ab145d3c4567994b8cdd5490fcde60f, type: 2}
     - target: {fileID: 4597862506344497799, guid: 214b673e61a328f4b97a4c1f1bba63d3, type: 3}
       propertyPath: spawner
       value: 
