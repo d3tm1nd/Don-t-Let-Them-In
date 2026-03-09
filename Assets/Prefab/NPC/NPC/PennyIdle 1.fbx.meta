@@ -3,7 +3,32 @@ guid: 7233cad5cbfdc9746ba91b8350417fe6
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Penny_Cloth
+    second: {fileID: 2100000, guid: ae4aae6fcbbafaa44ae0448c6db39411, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Penny_Eye
+    second: {fileID: 2100000, guid: c05b939fc313ca048a2ec0c6ea2bf0af, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Penny_Hair
+    second: {fileID: 2100000, guid: 43fae61b32418e24d83f42e60c4553cd, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Penny_Skin
+    second: {fileID: 2100000, guid: 7576f0eb63089734facac98b1253be48, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: openPBR_shader1
+    second: {fileID: 2100000, guid: ef1a5fb856db88447868fa2d0685a82e, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
