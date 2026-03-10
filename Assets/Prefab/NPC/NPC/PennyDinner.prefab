@@ -1410,7 +1410,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 7233cad5cbfdc9746ba91b8350417fe6, type: 3}
       propertyPath: m_Name
-      value: PennyIdle 1
+      value: PennyDinner
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 7233cad5cbfdc9746ba91b8350417fe6, type: 3}
       propertyPath: m_Layer
@@ -2544,7 +2544,7 @@ Animator:
   m_GameObject: {fileID: 4226302323286500380}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 84de530614a78294e95665a06e4bf786, type: 2}
+  m_Controller: {fileID: 9100000, guid: af2f4ab95edd9eb4982663293eab729d, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
