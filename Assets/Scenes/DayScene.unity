@@ -20,11 +20,11 @@ RenderSettings:
   m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
+  m_AmbientSkyColor: {r: 0.066037714, g: 0.066037714, b: 0.066037714, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1.22
-  m_AmbientMode: 0
+  m_AmbientMode: 3
   m_SubtractiveShadowColor: {r: 0.5660378, g: 0.47507352, b: 0.28568888, a: 1}
   m_SkyboxMaterial: {fileID: 2100000, guid: aa91e16a2b9bb4a4d8996af5811b2e21, type: 2}
   m_HaloStrength: 0.5
@@ -1371,7 +1371,7 @@ Light:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingLayerMask: 1
-  m_Lightmapping: 4
+  m_Lightmapping: 2
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1
@@ -1394,13 +1394,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 410087039}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
-  m_LocalPosition: {x: 0, y: 3, z: 0}
+  m_LocalRotation: {x: 0.6957918, y: -0.016125703, z: 0.07007655, w: 0.71463495}
+  m_LocalPosition: {x: -1.4, y: 9.67, z: 0.07}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: 85.368, y: 67.25, z: 74.245}
 --- !u!114 &410087042
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2163,7 +2163,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.9245283, g: 0.55608433, b: 0.14391243, a: 1}
   m_Intensity: 12.01
-  m_Range: 4.42
+  m_Range: 4
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
@@ -2365,7 +2365,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 832575517}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
   m_Name: 
@@ -4277,7 +4277,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.9245283, g: 0.55608433, b: 0.14391243, a: 1}
   m_Intensity: 12.01
-  m_Range: 4.42
+  m_Range: 4
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
@@ -5506,6 +5506,14 @@ PrefabInstance:
       propertyPath: spawner
       value: 
       objectReference: {fileID: 675346339}
+    - target: {fileID: 2042742394308738151, guid: ca0a82a66781b4448a875e4d7f3dada8, type: 3}
+      propertyPath: m_CastShadows
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2042742394308738151, guid: ca0a82a66781b4448a875e4d7f3dada8, type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3685904538616638498, guid: ca0a82a66781b4448a875e4d7f3dada8, type: 3}
       propertyPath: m_LocalPosition.x
       value: -3.83
@@ -5555,7 +5563,8 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 675346339}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 4675849446311219539, guid: ca0a82a66781b4448a875e4d7f3dada8, type: 3}
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 3685904538616638498, guid: ca0a82a66781b4448a875e4d7f3dada8, type: 3}
       insertIndex: 7
