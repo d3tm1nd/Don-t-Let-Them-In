@@ -1,90 +1,188 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class NPCSpawner : MonoBehaviour
 {
-    [Header("Outside NPC (ตัวแรก)")]
-    public GameObject outsideNPCPrefab;
+    [Header("Rules (2-day)")]
+    [Tooltip("TwoDayRules asset (Day1: 2H 2G, Day2: 2H 1G)")]
+    public TwoDayRules rules;
+
+    [Header("Outside Spawn")]
     public Transform outsideSpawnPoint;
 
-    [Header("Next Outside NPC (ตัวใหม่/ตัวอื่น)")]
-    [Tooltip("Prefab NPCdoor ตัวใหม่ที่ spawn ข้างนอก")]
-    public GameObject nextOutsideNPCPrefab;
+    [Header("Outside Door NPC Prefabs")]
+    [Tooltip("Door NPC prefabs for HUMAN visitors (at least 1)")]
+    public GameObject[] humanOutsideDoorPrefabs;
+    [Tooltip("Door NPC prefabs for GHOST visitors (at least 1)")]
+    public GameObject[] ghostOutsideDoorPrefabs;
 
-    [Header("Inside NPC")]
-    public GameObject insideNPCPrefab;
-    [Tooltip("Prefab Inside สำหรับตัวใหม่ (เหมือนกับ prefab ตัวใหม่)")]
-    public GameObject newInsideNPCPrefab;
-    [Tooltip("จุด spawn ด้านใน (หลายจุด → คนละที่ทุกครั้ง)")]
+    [Header("Inside Prefabs")]
+    [Tooltip("Inside prefabs for HUMAN visitors (must have NPCTypeTag=Human)")]
+    public GameObject[] humanInsidePrefabs;
+    [Tooltip("Inside prefabs for GHOST visitors (must have NPCTypeTag=Ghost)")]
+    public GameObject[] ghostInsidePrefabs;
+
+    [Header("Inside Spawn Points")]
+    [Tooltip("Multiple inside spawn points (rotating)")]
     public Transform[] insideSpawnPoints;
 
-    [Header("Spawn Limits & Delays")]
-    [Tooltip("จำนวนสูงสุดของ NPC ที่ spawn (รวมตัวแรก)")]
-    public int maxNPCs = 5;
-    [Tooltip("Delay ก่อน spawn NPC ด้านใน")]
+    [Header("Delays")]
     public float insideSpawnDelay = 0.5f;
-    [Tooltip("Delay ก่อน spawn NPCdoor ตัวใหม่")]
     public float newOutsideDelay = 2.5f;
 
     [Header("Audio")]
     public AudioClip knockSound;
 
-    AudioSource audioSource;
+    private AudioSource audioSource;
 
     private int insideIndex = 0;
-    private int spawnedCount = 0;
-    public int acceptedCount = 0;
 
-    public bool AllNPCsAccepted => acceptedCount >= maxNPCs;
+    // Today plan
+    private Queue<VisitorPlan> _todayQueue = new Queue<VisitorPlan>();
+    private int _todayTotal = 0;
+
+    // Stats (optional)
+    public int spawnedCount = 0;
+    public int acceptedCount = 0;
 
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
-
         if (audioSource == null)
             audioSource = gameObject.AddComponent<AudioSource>();
 
-        StartCoroutine(SpawnOutside());
+        BuildTodayQueue();
+        StartCoroutine(SpawnOutsideInitial());
     }
 
-    IEnumerator SpawnOutside()
+    private void BuildTodayQueue()
     {
-        yield return new WaitForSeconds(1f);
+        int day = (PhaseManager.Instance != null) ? Mathf.Max(1, PhaseManager.Instance.currentDay) : 1;
 
-        GameObject npc = Instantiate(
-            outsideNPCPrefab,
-            outsideSpawnPoint.position,
-            outsideSpawnPoint.rotation
-        );
+        int humans = 2;
+        int ghosts = 2;
 
-        DoorNPC doorNPC = npc.GetComponent<DoorNPC>();
-        if (doorNPC != null)
+        if (rules != null)
         {
-            doorNPC.insidePrefab = insideNPCPrefab;
-            doorNPC.spawner = this;
+            if (day <= 1) { humans = rules.day1Humans; ghosts = rules.day1Ghosts; }
+            else if (day == 2) { humans = rules.day2Humans; ghosts = rules.day2Ghosts; }
+            else { humans = 0; ghosts = 0; }
         }
 
-        spawnedCount++;
-        Debug.Log($"✅ Spawn Outside NPC (Initial) | Spawned: {spawnedCount}/{maxNPCs} | Accepted: {acceptedCount}/{maxNPCs}");
+        _todayTotal = Mathf.Max(0, humans + ghosts);
+        _todayQueue.Clear();
+
+        // build a random sequence of kinds (human/ghost) matching the counts
+        List<NPCKind> kinds = new List<NPCKind>(_todayTotal);
+        for (int i = 0; i < humans; i++) kinds.Add(NPCKind.Human);
+        for (int i = 0; i < ghosts; i++) kinds.Add(NPCKind.Ghost);
+
+        // shuffle
+        for (int i = 0; i < kinds.Count; i++)
+        {
+            int j = Random.Range(i, kinds.Count);
+            (kinds[i], kinds[j]) = (kinds[j], kinds[i]);
+        }
+
+        // map kinds -> prefabs
+        for (int i = 0; i < kinds.Count; i++)
+        {
+            var k = kinds[i];
+            var outside = PickOutsidePrefab(k);
+            var inside = PickInsidePrefab(k);
+            _todayQueue.Enqueue(new VisitorPlan { kind = k, outsideDoorPrefab = outside, insidePrefab = inside });
+        }
+
+        Debug.Log($"📅 Day {day} visitor plan: total={_todayTotal} (H={humans}, G={ghosts})");
+    }
+
+    private GameObject PickOutsidePrefab(NPCKind kind)
+    {
+        var arr = (kind == NPCKind.Ghost) ? ghostOutsideDoorPrefabs : humanOutsideDoorPrefabs;
+        if (arr == null || arr.Length == 0)
+        {
+            Debug.LogError($"❌ NPCSpawner: Missing outside door prefabs for {kind}");
+            return null;
+        }
+        return arr[Random.Range(0, arr.Length)];
+    }
+
+    private GameObject PickInsidePrefab(NPCKind kind)
+    {
+        var arr = (kind == NPCKind.Ghost) ? ghostInsidePrefabs : humanInsidePrefabs;
+        if (arr == null || arr.Length == 0)
+        {
+            Debug.LogError($"❌ NPCSpawner: Missing inside prefabs for {kind}");
+            return null;
+        }
+        return arr[Random.Range(0, arr.Length)];
+    }
+
+    IEnumerator SpawnOutsideInitial()
+    {
+        yield return new WaitForSeconds(1f);
+        SpawnNextOutsideNow();
 
         if (knockSound != null)
             audioSource.PlayOneShot(knockSound);
     }
 
-    // ================= Spawn Inside (บันทึก data) =================
+    private void SpawnNextOutsideNow()
+    {
+        if (spawnedCount >= _todayTotal)
+        {
+            Debug.Log($"🚫 No more visitors today. Spawned={spawnedCount}/{_todayTotal}");
+            return;
+        }
+
+        if (_todayQueue.Count == 0)
+        {
+            Debug.LogWarning("⚠️ Visitor queue empty unexpectedly.");
+            return;
+        }
+
+        var plan = _todayQueue.Dequeue();
+        if (plan.outsideDoorPrefab == null)
+        {
+            Debug.LogError("❌ plan.outsideDoorPrefab is null");
+            return;
+        }
+
+        GameObject npcDoor = Instantiate(plan.outsideDoorPrefab, outsideSpawnPoint.position, outsideSpawnPoint.rotation);
+        var doorNPC = npcDoor.GetComponent<DoorNPC>();
+        if (doorNPC == null)
+        {
+            Debug.LogError($"❌ Prefab {plan.outsideDoorPrefab.name} has no DoorNPC component!");
+            Destroy(npcDoor);
+            return;
+        }
+
+        doorNPC.spawner = this;
+        doorNPC.insidePrefab = plan.insidePrefab; // inside prefab for accept
+
+        spawnedCount++;
+        Debug.Log($"✅ Spawn Outside Visitor ({plan.kind}) | Spawned {spawnedCount}/{_todayTotal} | Accepted {acceptedCount}");
+    }
+
+    // ================= Spawn Inside (records data) =================
     public IEnumerator SpawnInsideNPC(GameObject prefabOverride = null)
     {
-        Debug.Log($"⏳ [Inside] รอ {insideSpawnDelay}s...");
-
+        Debug.Log($"⏳ [Inside] Wait {insideSpawnDelay}s...");
         yield return new WaitForSeconds(insideSpawnDelay);
 
-        GameObject prefab = prefabOverride != null ? prefabOverride : insideNPCPrefab;
+        GameObject prefab = prefabOverride != null ? prefabOverride : null;
+        if (prefab == null)
+        {
+            Debug.LogWarning("⚠️ SpawnInsideNPC: prefab is null");
+            yield break;
+        }
 
         if (insideSpawnPoints == null || insideSpawnPoints.Length == 0)
         {
-            Debug.LogWarning("⚠️ ไม่มี Inside Spawn Points!");
+            Debug.LogWarning("⚠️ No insideSpawnPoints! Using spawner position fallback.");
             GameObject fallbackNPC = Instantiate(prefab, transform.position, Quaternion.identity);
-            RecordNPCData(prefab, fallbackNPC.transform.position, fallbackNPC.transform.rotation);  // 🔥 บันทึก
+            RecordNPCData(prefab, fallbackNPC.transform.position, fallbackNPC.transform.rotation);
             yield break;
         }
 
@@ -94,41 +192,23 @@ public class NPCSpawner : MonoBehaviour
         GameObject insideNPC = Instantiate(prefab, spawnPoint.position, spawnPoint.rotation);
         insideIndex++;
 
-        // 🔥 NEW: บันทึก data ใน Manager
         RecordNPCData(prefab, insideNPC.transform.position, insideNPC.transform.rotation);
-
-        Debug.Log($"✅ [Inside] Spawn ที่จุด {idx + 1}! (Prefab: {prefab.name})");
+        Debug.Log($"✅ [Inside] Spawn at point {idx + 1} (Prefab: {prefab.name})");
     }
 
-    // ================= Spawn NPCdoor ตัวใหม่ =================
+    // ================= Spawn Next Outside Visitor =================
     public IEnumerator SpawnNewOutsideNPC()
     {
-        if (spawnedCount >= maxNPCs)
+        if (spawnedCount >= _todayTotal)
         {
-            Debug.Log($"🚫 ถึง limit Spawn ({maxNPCs})! | Accepted: {acceptedCount}/{maxNPCs}");
+            Debug.Log($"🚫 Visitor limit reached today ({_todayTotal}). Accepted={acceptedCount}");
             yield break;
         }
 
-        Debug.Log($"⏳ [New Outside] รอ {newOutsideDelay}s...");
-
+        Debug.Log($"⏳ [New Outside] Wait {newOutsideDelay}s...");
         yield return new WaitForSeconds(newOutsideDelay);
 
-        GameObject prefabToSpawn = nextOutsideNPCPrefab != null ? nextOutsideNPCPrefab : outsideNPCPrefab;
-        GameObject newNPC = Instantiate(prefabToSpawn, outsideSpawnPoint.position, outsideSpawnPoint.rotation);
-
-        DoorNPC doorNPC = newNPC.GetComponent<DoorNPC>();
-        if (doorNPC == null)
-        {
-            Debug.LogError($"❌ Prefab {prefabToSpawn.name} ไม่มี DoorNPC!");
-            Destroy(newNPC);
-            yield break;
-        }
-
-        doorNPC.insidePrefab = newInsideNPCPrefab != null ? newInsideNPCPrefab : insideNPCPrefab;
-        doorNPC.spawner = this;
-
-        spawnedCount++;
-        Debug.Log($"✅ [New Outside] Spawn สำเร็จ! | Spawned: {spawnedCount}/{maxNPCs} | Accepted: {acceptedCount}/{maxNPCs}");
+        SpawnNextOutsideNow();
 
         if (knockSound != null)
             audioSource.PlayOneShot(knockSound);
@@ -137,15 +217,10 @@ public class NPCSpawner : MonoBehaviour
     public void OnNPCAccepted()
     {
         acceptedCount++;
-        Debug.Log($"✅ รับ NPC เข้าแล้ว! | Accepted: {acceptedCount}/{maxNPCs}");
-
-        if (AllNPCsAccepted)
-        {
-            Debug.Log("🎉 รับ NPC ครบทุกตัว! กด E ที่ประตูเพื่อไป Night Scene");
-        }
+        Debug.Log($"✅ Accepted visitor. Accepted={acceptedCount} (today spawned {spawnedCount}/{_todayTotal})");
     }
 
-    // 🔥 NEW: บันทึก data ใน Manager
+    // Records data in NPCDataManager
     private void RecordNPCData(GameObject prefab, Vector3 position, Quaternion rotation)
     {
         if (NPCDataManager.Instance != null)
@@ -154,7 +229,14 @@ public class NPCSpawner : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("⚠️ NPCDataManager ไม่พบ! ไม่บันทึก data");
+            Debug.LogWarning("⚠️ NPCDataManager not found! Data not recorded.");
         }
+    }
+
+    private struct VisitorPlan
+    {
+        public NPCKind kind;
+        public GameObject outsideDoorPrefab;
+        public GameObject insidePrefab;
     }
 }
