@@ -118,7 +118,7 @@ public class BedInteractSceneFlow_2Days : MonoBehaviour, IInteractable
                 return;
             }
 
-            PhaseManager.Instance.SetPhase(PhaseManager.GamePhase.Morning);
+            PhaseManager.Instance.GoMorning();   // ✅ เพิ่มวัน + ตั้ง phase Morning
             LoadSceneSafe(morningSceneName);
             return;
         }
