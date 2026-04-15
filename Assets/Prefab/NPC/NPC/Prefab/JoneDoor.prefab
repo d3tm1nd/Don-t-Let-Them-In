@@ -298,11 +298,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 2df89a1ad41a28140a4a92795b662f6c, type: 3}
       propertyPath: m_Name
-      value: JoneIdleMode;
+      value: JoneDoor
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 2df89a1ad41a28140a4a92795b662f6c, type: 3}
       propertyPath: m_Layer
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 2df89a1ad41a28140a4a92795b662f6c, type: 3}
+      propertyPath: m_TagString
+      value: Human
       objectReference: {fileID: 0}
     - target: {fileID: 942636237656374148, guid: 2df89a1ad41a28140a4a92795b662f6c, type: 3}
       propertyPath: m_Layer
@@ -493,10 +497,10 @@ PrefabInstance:
       addedObject: {fileID: 2944036793419855709}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2df89a1ad41a28140a4a92795b662f6c, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 5370198839822509054}
+      addedObject: {fileID: 2818230402031605554}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2df89a1ad41a28140a4a92795b662f6c, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2818230402031605554}
+      addedObject: {fileID: -5757189653908867812}
   m_SourcePrefab: {fileID: 100100000, guid: 2df89a1ad41a28140a4a92795b662f6c, type: 3}
 --- !u!1 &957669206859664320 stripped
 GameObject:
@@ -525,23 +529,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &5370198839822509054
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 957669206859664320}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c3b5187de814f884ab8af3f0e0deb2d7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DoorNPC
-  dialogueText: Please Let me in. I promise Im good guy
-  insultText: No way bro....
-  spawner: {fileID: 0}
-  insidePrefab: {fileID: 0}
-  doorOpenSound: {fileID: 8300000, guid: c4f5985e35afbbc48be28d7ca5f371bf, type: 3}
 --- !u!136 &2818230402031605554
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -565,3 +552,21 @@ CapsuleCollider:
   m_Height: 0.25535023
   m_Direction: 1
   m_Center: {x: 0, y: 0.11267504, z: -2.1479457e-10}
+--- !u!114 &-5757189653908867812
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 957669206859664320}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17eaa55cea5b43f4d9ab6a8ed8486fdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DoorNPC
+  dialogueText: _____
+  insultText: ______
+  spawner: {fileID: 0}
+  insidePrefab: {fileID: 957669206859664320, guid: 70202bcf8fde4b7459caa80d53adf0f2, type: 3}
+  doorOpenSound: {fileID: 0}
+  trackDecisionFor2DayRules: 1

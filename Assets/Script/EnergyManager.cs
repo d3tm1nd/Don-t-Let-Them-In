@@ -40,7 +40,14 @@ public class EnergyManager : MonoBehaviour
         OnChanged?.Invoke(currentCharges, maxCharges);
         return true;
     }
-
+    public void AddCharges(int amount = 1)
+    {
+    int before = currentCharges;
+    currentCharges = Mathf.Clamp(currentCharges + amount, 0, maxCharges);
+    if (currentCharges != before)
+        OnChanged?.Invoke(currentCharges, maxCharges);
+     }
+    
     public void ResetFull()
     {
         currentCharges = maxCharges;

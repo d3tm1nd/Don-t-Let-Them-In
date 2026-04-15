@@ -1410,11 +1410,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 7233cad5cbfdc9746ba91b8350417fe6, type: 3}
       propertyPath: m_Name
-      value: PennyIdle 1
+      value: PennyDoor
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 7233cad5cbfdc9746ba91b8350417fe6, type: 3}
       propertyPath: m_Layer
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 7233cad5cbfdc9746ba91b8350417fe6, type: 3}
+      propertyPath: m_TagString
+      value: Human
       objectReference: {fileID: 0}
     - target: {fileID: 942636237656374148, guid: 7233cad5cbfdc9746ba91b8350417fe6, type: 3}
       propertyPath: m_Layer
@@ -2504,7 +2508,7 @@ PrefabInstance:
       addedObject: {fileID: -4289878306664984522}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7233cad5cbfdc9746ba91b8350417fe6, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 8966444323545684747}
+      addedObject: {fileID: 8469311410565134811}
   m_SourcePrefab: {fileID: 100100000, guid: 7233cad5cbfdc9746ba91b8350417fe6, type: 3}
 --- !u!1 &4226302323286500380 stripped
 GameObject:
@@ -2556,7 +2560,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &8966444323545684747
+--- !u!114 &8469311410565134811
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2565,11 +2569,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 4226302323286500380}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c3b5187de814f884ab8af3f0e0deb2d7, type: 3}
+  m_Script: {fileID: 11500000, guid: 17eaa55cea5b43f4d9ab6a8ed8486fdf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorNPC
-  dialogueText: Please Let me in, I'm not dangerous.
-  insultText: I can't be around here too many times.
+  dialogueText: _____
+  insultText: _______
   spawner: {fileID: 0}
-  insidePrefab: {fileID: 0}
-  doorOpenSound: {fileID: 8300000, guid: c4f5985e35afbbc48be28d7ca5f371bf, type: 3}
+  insidePrefab: {fileID: 4226302323286500380, guid: 51ea77798eba9f74f8c9897a533d4294, type: 3}
+  doorOpenSound: {fileID: 0}
+  trackDecisionFor2DayRules: 1
