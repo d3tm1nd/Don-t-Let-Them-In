@@ -26,7 +26,7 @@ public static class BedBlockReason
             if (EnergyManager.Instance.Current != 0) return "You must spend all energy first.";
         }
 
-        if (phase == PhaseManager.GamePhase.Event)
+        if (phase == PhaseManager.GamePhase.Day)
         {
             if (DailyNPCDecisionTracker.Instance == null) return "DecisionTracker missing";
             if (!DailyNPCDecisionTracker.Instance.IsCompletedForToday()) return "You must accept/reject all visitors for today.";

@@ -12,7 +12,7 @@ public class PlayerInteract : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, distance))
         {
-            Debug.Log("Hit: " + hit.collider.name);
+            //Debug.Log("Hit: " + hit.collider.name);
 
             // กด E
             if (Input.GetKeyDown(KeyCode.E))

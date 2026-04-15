@@ -44,7 +44,7 @@ public class FoodToEnergyInteract : MonoBehaviour, IInteractable
         if (dayOnly && PhaseManager.Instance != null)
         {
             // In your loop, Day = GamePhase.Event
-            if (PhaseManager.Instance.currentPhase != PhaseManager.GamePhase.Event)
+            if (PhaseManager.Instance.currentPhase != PhaseManager.GamePhase.Day)
             {
                 if (wrongTimeSfx != null) _audio.PlayOneShot(wrongTimeSfx);
                 Debug.Log("⛔ You can only use food to restore energy during the day.");

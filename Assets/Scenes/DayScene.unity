@@ -261,6 +261,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1846753747}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &138867722
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 138867723}
+  m_Layer: 0
+  m_Name: SpawnInsidePoint4
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &138867723
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 138867722}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -2.683, y: 0.67, z: -0.517}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1846753747}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &185721360
 GameObject:
   m_ObjectHideFlags: 0
@@ -1859,27 +1890,32 @@ MonoBehaviour:
   m_GameObject: {fileID: 675346337}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 47cb378190c8eb4488f8e797e6569462, type: 3}
+  m_Script: {fileID: 11500000, guid: 603e2929fb1b062499cdcffb238aa111, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NPCSpawner
   rules: {fileID: 11400000, guid: d4af31d513f78524195c1dfb9fb165f5, type: 2}
   outsideSpawnPoint: {fileID: 1175958390}
-  humanOutsideDoorPrefabs:
-  - {fileID: 957669206859664320, guid: 1bca2ca4cae7baa40af48955b07c552a, type: 3}
-  - {fileID: 4226302323286500380, guid: 4506e20a3e541d74baa88a069180190d, type: 3}
-  ghostOutsideDoorPrefabs: []
-  humanInsidePrefabs:
-  - {fileID: 4226302323286500380, guid: 51ea77798eba9f74f8c9897a533d4294, type: 3}
-  - {fileID: 957669206859664320, guid: 70202bcf8fde4b7459caa80d53adf0f2, type: 3}
-  ghostInsidePrefabs: []
   insideSpawnPoints:
   - {fileID: 101430428}
   - {fileID: 2053591452}
   - {fileID: 343632905}
+  - {fileID: 138867723}
+  humanOutsideDoorPrefabs:
+  - {fileID: 957669206859664320, guid: 1bca2ca4cae7baa40af48955b07c552a, type: 3}
+  - {fileID: 4226302323286500380, guid: 4506e20a3e541d74baa88a069180190d, type: 3}
+  ghostOutsideDoorPrefabs:
+  - {fileID: 3219559610544741984, guid: 4b87217a36cdba8428e6cf8ec0094594, type: 3}
+  humanInsidePrefabs:
+  - {fileID: 957669206859664320, guid: 70202bcf8fde4b7459caa80d53adf0f2, type: 3}
+  - {fileID: 4226302323286500380, guid: 51ea77798eba9f74f8c9897a533d4294, type: 3}
+  ghostInsidePrefabs:
+  - {fileID: 69851806298905859, guid: 18db90ce80f14a94e8a8be988583a15f, type: 3}
+  shuffleOrder: 1
+  initialOutsideDelay: 1
   insideSpawnDelay: 0.5
   newOutsideDelay: 2.5
   knockSound: {fileID: 8300000, guid: e34d07a77b9943e45bf6c05698d16c52, type: 3}
-  spawnedCount: 0
+  spawnedOutsideCount: 0
   acceptedCount: 0
 --- !u!1 &705875387
 GameObject:
@@ -3812,7 +3848,7 @@ GameObject:
   - component: {fileID: 1583456206}
   - component: {fileID: 1583456205}
   - component: {fileID: 1583456204}
-  - component: {fileID: 1583456203}
+  - component: {fileID: 1583456208}
   m_Layer: 6
   m_Name: Bed
   m_TagString: Untagged
@@ -3820,28 +3856,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1583456203
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1583456202}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc4ff2db09a3bc04a9579d6ea9decb80, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BedInteractSceneFlow
-  requiredLayerName: Interactable
-  morningSceneName: MorningScene
-  daySceneName: DayScene
-  nightSceneName: NightScene
-  rules: {fileID: 11400000, guid: d4af31d513f78524195c1dfb9fb165f5, type: 2}
-  requireCompletion: 1
-  completionProvider: {fileID: 0}
-  endEvaluator: {fileID: 0}
-  sleepSfx: {fileID: 0}
-  blockedSfx: {fileID: 0}
 --- !u!65 &1583456204
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3934,6 +3948,28 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1583456208
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1583456202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3597311d9157d314985365b0b5a51cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BedInteractSceneFlow_2Days
+  requiredLayerName: Interactable
+  morningSceneName: MorningScene
+  daySceneName: DayScene
+  nightSceneName: NightScene
+  rules: {fileID: 11400000, guid: d4af31d513f78524195c1dfb9fb165f5, type: 2}
+  requireCompletion: 1
+  completionProvider: {fileID: 1653840215}
+  endEvaluator: {fileID: 0}
+  sleepSfx: {fileID: 0}
+  blockedSfx: {fileID: 0}
 --- !u!1 &1651138625
 GameObject:
   m_ObjectHideFlags: 0
@@ -4055,6 +4091,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1651138625}
   m_CullTransparentMesh: 1
+--- !u!1 &1653840212
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1653840214}
+  - component: {fileID: 1653840215}
+  m_Layer: 0
+  m_Name: BedRules
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1653840214
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1653840212}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.41023, y: 0.08976, z: -2.7692}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1653840215
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1653840212}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 401545706faec97478087e8d314ae6e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BedPhaseCompletionProvider
 --- !u!1 &1655961118
 GameObject:
   m_ObjectHideFlags: 0
@@ -4979,6 +5059,7 @@ Transform:
   - {fileID: 101430428}
   - {fileID: 2053591452}
   - {fileID: 343632905}
+  - {fileID: 138867723}
   - {fileID: 1175958390}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5737,3 +5818,4 @@ SceneRoots:
   - {fileID: 1163332648}
   - {fileID: 1253912200}
   - {fileID: 1583456207}
+  - {fileID: 1653840214}

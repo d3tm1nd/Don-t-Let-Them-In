@@ -22,7 +22,7 @@ public static class BedPromptText
         {
             if (phase == PhaseManager.GamePhase.Night) return "Press E to sleep (go to Morning)";
             if (phase == PhaseManager.GamePhase.Morning) return "Press E to continue (go to Day)";
-            if (phase == PhaseManager.GamePhase.Event) return "Press E to sleep (go to Night)";
+            if (phase == PhaseManager.GamePhase.Day) return "Press E to sleep (go to Night)";
             return "Press E";
         }
 
@@ -50,7 +50,7 @@ public static class BedPromptText
             return $"{deliveryPart} | {energyPart}";
         }
 
-        if (phase == PhaseManager.GamePhase.Event)
+        if (phase == PhaseManager.GamePhase.Day)
         {
             // Must decide visitors
             int made = DailyNPCDecisionTracker.Instance != null ? DailyNPCDecisionTracker.Instance.DecisionsMade : 0;

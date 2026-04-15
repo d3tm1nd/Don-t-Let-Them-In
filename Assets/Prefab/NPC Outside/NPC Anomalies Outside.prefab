@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 3287713799061426253}
   - component: {fileID: 932049669559856173}
   - component: {fileID: 6115615031208117014}
-  - component: {fileID: 8672580769005611680}
   - component: {fileID: 6226638073788372439}
+  - component: {fileID: 4958926490648852982}
   m_Layer: 6
   m_Name: NPC Anomalies Outside
   m_TagString: Untagged
@@ -116,23 +116,6 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8672580769005611680
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3219559610544741984}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c3b5187de814f884ab8af3f0e0deb2d7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DoorNPC
-  dialogueText: Please Let me in, It very Dangerous outside.
-  insultText: cd ,u lbmTb vtwi..........
-  spawner: {fileID: 0}
-  insidePrefab: {fileID: 0}
-  doorOpenSound: {fileID: 8300000, guid: c4f5985e35afbbc48be28d7ca5f371bf, type: 3}
 --- !u!82 &6226638073788372439
 AudioSource:
   m_ObjectHideFlags: 0
@@ -230,6 +213,24 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &4958926490648852982
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3219559610544741984}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17eaa55cea5b43f4d9ab6a8ed8486fdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DoorNPC
+  dialogueText: _____
+  insultText: _____
+  spawner: {fileID: 0}
+  insidePrefab: {fileID: 69851806298905859, guid: 18db90ce80f14a94e8a8be988583a15f, type: 3}
+  doorOpenSound: {fileID: 0}
+  trackDecisionFor2DayRules: 1
 --- !u!1 &4379222795152092204
 GameObject:
   m_ObjectHideFlags: 0

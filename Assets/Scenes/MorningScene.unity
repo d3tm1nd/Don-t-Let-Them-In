@@ -1821,7 +1821,7 @@ GameObject:
   - component: {fileID: 892687548}
   - component: {fileID: 892687547}
   - component: {fileID: 892687546}
-  - component: {fileID: 892687545}
+  - component: {fileID: 892687550}
   m_Layer: 6
   m_Name: Bed
   m_TagString: Untagged
@@ -1829,28 +1829,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &892687545
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 892687544}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc4ff2db09a3bc04a9579d6ea9decb80, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BedInteractSceneFlow
-  requiredLayerName: Interactable
-  morningSceneName: MorningScene
-  daySceneName: DayScene
-  nightSceneName: NightScene
-  rules: {fileID: 11400000, guid: d4af31d513f78524195c1dfb9fb165f5, type: 2}
-  requireCompletion: 1
-  completionProvider: {fileID: 1694026300}
-  endEvaluator: {fileID: 1942742123}
-  sleepSfx: {fileID: 0}
-  blockedSfx: {fileID: 0}
 --- !u!65 &892687546
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1943,6 +1921,28 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &892687550
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 892687544}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3597311d9157d314985365b0b5a51cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BedInteractSceneFlow_2Days
+  requiredLayerName: Interactable
+  morningSceneName: MorningScene
+  daySceneName: DayScene
+  nightSceneName: NightScene
+  rules: {fileID: 11400000, guid: d4af31d513f78524195c1dfb9fb165f5, type: 2}
+  requireCompletion: 1
+  completionProvider: {fileID: 1694026302}
+  endEvaluator: {fileID: 1942742123}
+  sleepSfx: {fileID: 0}
+  blockedSfx: {fileID: 0}
 --- !u!1 &984213706
 GameObject:
   m_ObjectHideFlags: 0
@@ -2113,7 +2113,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ed1001b6a962544197ade4e16d6456b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnergySystem
-  energyIcons: []
 --- !u!114 &1066592095
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3101,7 +3100,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1694026301}
-  - component: {fileID: 1694026300}
+  - component: {fileID: 1694026302}
   m_Layer: 0
   m_Name: BedRules
   m_TagString: Untagged
@@ -3109,18 +3108,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1694026300
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1694026299}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f822d973cf3bdf743916354c60e328b0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BedPhaseCompletionProvider
 --- !u!4 &1694026301
 Transform:
   m_ObjectHideFlags: 0
@@ -3129,13 +3116,25 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1694026299}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.41023, y: 0.08976, z: -2.7692}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -1.4102302, y: 0.089760005, z: -2.7692}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1694026302
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1694026299}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 401545706faec97478087e8d314ae6e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BedPhaseCompletionProvider
 --- !u!1 &1744169385
 GameObject:
   m_ObjectHideFlags: 0
@@ -3471,6 +3470,7 @@ GameObject:
   - component: {fileID: 1942742117}
   - component: {fileID: 1942742124}
   - component: {fileID: 1942742123}
+  - component: {fileID: 1942742125}
   m_Layer: 0
   m_Name: GameSystem
   m_TagString: Untagged
@@ -3582,6 +3582,20 @@ MonoBehaviour:
   maxFoodStorage: 50
   maxOrderPerNight: 10
   deliveryAppliedDay: -1
+--- !u!114 &1942742125
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1942742116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5458fa436f6f58942aa59151c3ede576, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PhaseManager
+  currentPhase: 0
+  currentDay: 1
 --- !u!1 &1955475024
 GameObject:
   m_ObjectHideFlags: 0
@@ -5201,8 +5215,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d770daa106294249b8a5b3c77f3449e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorToNight
-  spawner: {fileID: 0}
-  doorOpenSound: {fileID: 8300000, guid: c4f5985e35afbbc48be28d7ca5f371bf, type: 3}
 --- !u!33 &473314866860876923
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -30583,8 +30595,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d770daa106294249b8a5b3c77f3449e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorToNight
-  spawner: {fileID: 0}
-  doorOpenSound: {fileID: 8300000, guid: c4f5985e35afbbc48be28d7ca5f371bf, type: 3}
 --- !u!33 &8946468889471252378
 MeshFilter:
   m_ObjectHideFlags: 0
