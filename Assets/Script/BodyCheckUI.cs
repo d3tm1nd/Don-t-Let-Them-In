@@ -1,7 +1,26 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+/// <summary>
+/// UI ตรวจร่างกายแบบ "ไอคอน" (ตา/มือ) + อุณหภูมิเป็น Text
+///
+/// เงื่อนไข Energy:
+/// - กด E ที่ NPC เปิด UI: ไม่ลด Energy
+/// - กดปุ่มตรวจ (ตา/มือ/อุณหภูมิ): ลด Energy 1
+/// - Energy หมด: ล็อกปุ่มตรวจ (กดไม่ได้)
+///
+/// เงื่อนไขการตัดสินใจ (ยิง/ไม่ยิง):
+/// - ต้องตรวจครบ 3 อย่าง (ตา + มือ + อุณหภูมิ) ก่อน
+/// - จากนั้นจะแสดง Decision Panel ให้เลือก:
+///   - ยิงทิ้ง: ทำลาย GameObject ของ NPC เป้าหมาย (ปรับเองได้)
+///   - ไม่ยิง: ปิด UI แล้วปล่อย NPC อยู่ต่อ
+///
+/// Mouse/Cursor:
+/// - ตอนเปิด UI จะปลดล็อกเมาส์ + แสดง Cursor
+/// - ตอนปิด UI จะล็อกเมาส์กลับ (ตั้งค่าได้)
+/// - สามารถลากสคริปต์ที่ควรปิดระหว่าง UI เปิด (MouseLook/InteractionRay ฯลฯ) ได้
+/// </summary>
 public class BodyCheckUI : MonoBehaviour
 {
     public static BodyCheckUI Instance { get; private set; }
@@ -14,11 +33,16 @@ public class BodyCheckUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI energyText;
     [SerializeField] private TextMeshProUGUI tempText;
 
-    [Header("Buttons")]
+    [Header("Buttons (Checks)")]
     [SerializeField] private Button eyeButton;
     [SerializeField] private Button handButton;
     [SerializeField] private Button tempButton;
     [SerializeField] private Button closeButton;
+
+    [Header("Decision Panel (หลังตรวจครบ)")]
+    [SerializeField] private GameObject decisionPanel;
+    [SerializeField] private Button shootButton;
+    [SerializeField] private Button keepButton;
 
     [Header("Images (Results)")]
     [SerializeField] private Image eyeLeftImg;
@@ -50,31 +74,39 @@ public class BodyCheckUI : MonoBehaviour
         if (Instance == null) Instance = this;
         else { Destroy(gameObject); return; }
 
-        // กันลืมลาก root: ถ้าว่างให้ถือว่า root คือ GameObject นี้
+        // กันลืมลาก root
         if (root == null) root = gameObject;
 
         // ปิด UI ตั้งแต่เริ่มเกม
         root.SetActive(false);
 
-        // ผูกปุ่ม (กันลืมตั้ง OnClick ใน Inspector)
+        // ผูกปุ่ม (กันลืมตั้ง onClick)
         if (eyeButton != null) eyeButton.onClick.AddListener(OnCheckEyes);
         if (handButton != null) handButton.onClick.AddListener(OnCheckHands);
         if (tempButton != null) tempButton.onClick.AddListener(OnCheckTemperature);
         if (closeButton != null) closeButton.onClick.AddListener(Close);
+
+        if (shootButton != null) shootButton.onClick.AddListener(OnShootNPC);
+        if (keepButton != null) keepButton.onClick.AddListener(OnKeepNPC);
+
+        SetDecisionVisible(false);
     }
 
     void OnEnable()
     {
         if (EnergyManager.Instance != null)
-            EnergyManager.Instance.OnChanged += OnEnergyChanged; 
+            EnergyManager.Instance.OnChanged += OnEnergyChanged;
     }
 
     void OnDisable()
     {
         if (EnergyManager.Instance != null)
-            EnergyManager.Instance.OnChanged -= OnEnergyChanged; 
+            EnergyManager.Instance.OnChanged -= OnEnergyChanged;
     }
 
+    public bool IsOpen => root != null && root.activeSelf;
+
+    /// <summary>เปิด UI (ฟรี ไม่ลด Energy)</summary>
     public void Open(NPCHealthProfile target)
     {
         _target = target;
@@ -88,7 +120,7 @@ public class BodyCheckUI : MonoBehaviour
 
         if (npcNameText != null) npcNameText.text = _target.npcDisplayName;
 
-        // ซ่อนผลทุกอย่างก่อน
+        // รีเซ็ตการแสดงผล
         ShowEyes(false);
         ShowHands(false);
         ShowTemp(false);
@@ -96,6 +128,7 @@ public class BodyCheckUI : MonoBehaviour
 
         RefreshEnergyUI();
         RefreshLockState();
+        RefreshDecisionState();
     }
 
     public void Close()
@@ -103,14 +136,17 @@ public class BodyCheckUI : MonoBehaviour
         EnterUIMode(false);
         root.SetActive(false);
         _target = null;
+        SetDecisionVisible(false);
     }
 
-    // ===================== ตรวจ: ตา / มือ / อุณหภูมิ =====================
+    // ===================== ตรวจ (ลด Energy 1) =====================
 
     public void OnCheckEyes()
     {
         if (!TrySpendEnergy()) return;
         if (_target == null) return;
+
+        _target.MarkEyesChecked();
 
         ShowEyes(true);
         ShowHands(false);
@@ -118,9 +154,10 @@ public class BodyCheckUI : MonoBehaviour
 
         if (eyeLeftImg != null)
             eyeLeftImg.sprite = _target.leftEyeAbnormal ? eyeAbnormalSprite : eyeNormalSprite;
-
         if (eyeRightImg != null)
             eyeRightImg.sprite = _target.rightEyeAbnormal ? eyeAbnormalSprite : eyeNormalSprite;
+
+        RefreshDecisionState();
     }
 
     public void OnCheckHands()
@@ -128,21 +165,26 @@ public class BodyCheckUI : MonoBehaviour
         if (!TrySpendEnergy()) return;
         if (_target == null) return;
 
+        _target.MarkHandsChecked();
+
         ShowEyes(false);
         ShowHands(true);
         ShowTemp(false);
 
         if (handLeftImg != null)
             handLeftImg.sprite = _target.leftHandAbnormal ? handAbnormalSprite : handNormalSprite;
-
         if (handRightImg != null)
             handRightImg.sprite = _target.rightHandAbnormal ? handAbnormalSprite : handNormalSprite;
+
+        RefreshDecisionState();
     }
 
     public void OnCheckTemperature()
     {
         if (!TrySpendEnergy()) return;
         if (_target == null) return;
+
+        _target.MarkTempChecked();
 
         ShowEyes(false);
         ShowHands(false);
@@ -156,6 +198,51 @@ public class BodyCheckUI : MonoBehaviour
             tempIconImg.sprite = tempIconSprite;
             tempIconImg.enabled = (tempIconSprite != null);
         }
+
+        RefreshDecisionState();
+    }
+
+    // ===================== Decision (ยิง/ไม่ยิง) =====================
+
+    private void RefreshDecisionState()
+    {
+        if (_target == null)
+        {
+            SetDecisionVisible(false);
+            return;
+        }
+
+        bool ready = _target.IsFullyChecked;
+        SetDecisionVisible(ready);
+
+        if (shootButton != null) shootButton.interactable = ready;
+        if (keepButton != null) keepButton.interactable = ready;
+    }
+
+    private void SetDecisionVisible(bool show)
+    {
+        if (decisionPanel != null) decisionPanel.SetActive(show);
+    }
+
+    private void OnShootNPC()
+    {
+        if (_target == null) return;
+        if (!_target.IsFullyChecked) return;
+
+        // ยิงทิ้ง (แบบง่ายสุด): ลบ GameObject
+        // ถ้าคุณอยากทำอนิเมชัน/เสียง/เปลี่ยนสถานะ ให้แก้ตรงนี้ได้
+        Destroy(_target.gameObject);
+
+        Close();
+    }
+
+    private void OnKeepNPC()
+    {
+        if (_target == null) return;
+        if (!_target.IsFullyChecked) return;
+
+        // ไม่ยิง: ปิด UI เฉย ๆ
+        Close();
     }
 
     // ===================== Energy / Lock =====================
@@ -168,15 +255,16 @@ public class BodyCheckUI : MonoBehaviour
             return false;
         }
 
-        if (EnergyManager.Instance.Current <= 0) 
+        if (EnergyManager.Instance.Current <= 0)
         {
             RefreshLockState();
             return false;
         }
 
-        bool ok = EnergyManager.Instance.TrySpend(1); 
+        bool ok = EnergyManager.Instance.TrySpend(1);
         RefreshEnergyUI();
         RefreshLockState();
+
         return ok;
     }
 
@@ -184,17 +272,19 @@ public class BodyCheckUI : MonoBehaviour
     {
         RefreshEnergyUI();
         RefreshLockState();
+        RefreshDecisionState();
     }
 
     private void RefreshEnergyUI()
     {
         if (energyText == null || EnergyManager.Instance == null) return;
-        energyText.text = $"Energy: {EnergyManager.Instance.Current}/{EnergyManager.Instance.maxCharges}"; 
+        energyText.text = $"Energy: {EnergyManager.Instance.Current}/{EnergyManager.Instance.maxCharges}";
     }
 
     private void RefreshLockState()
     {
-        bool canCheck = (EnergyManager.Instance != null && EnergyManager.Instance.Current > 0); 
+        bool canCheck = (EnergyManager.Instance != null && EnergyManager.Instance.Current > 0);
+
         if (eyeButton != null) eyeButton.interactable = canCheck;
         if (handButton != null) handButton.interactable = canCheck;
         if (tempButton != null) tempButton.interactable = canCheck;
@@ -204,6 +294,7 @@ public class BodyCheckUI : MonoBehaviour
 
     private void EnterUIMode(bool uiOpen)
     {
+        // Cursor
         if (uiOpen && showCursorWhenOpen)
         {
             Cursor.visible = true;
@@ -215,6 +306,7 @@ public class BodyCheckUI : MonoBehaviour
             Cursor.visible = !hideCursorWhenClosed;
         }
 
+        // Disable/Enable other scripts while UI open
         if (disableWhileOpen != null)
         {
             for (int i = 0; i < disableWhileOpen.Length; i++)
@@ -225,7 +317,7 @@ public class BodyCheckUI : MonoBehaviour
         }
     }
 
-    // ===================== Show / Hide Groups =====================
+    // ===================== Show / Hide groups =====================
 
     private void ShowEyes(bool show)
     {

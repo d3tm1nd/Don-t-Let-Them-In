@@ -2,7 +2,7 @@ using UnityEngine;
 
 /// <summary>
 /// กด E ที่ NPC เพื่อเปิด UI ตรวจร่างกาย (ไม่ลด Energy)
-/// แต่ถ้า Energy หมด จะห้ามเปิด UI และ "กด E ที่ NPC ไม่ได้" ตามที่ต้องการ
+/// เงื่อนไข: ถ้า Energy หมด จะห้ามเปิด UI และ "กด E ที่ NPC ไม่ได้"
 /// </summary>
 public class NPCBodyCheckInteract : MonoBehaviour, IInteractable
 {
@@ -27,6 +27,12 @@ public class NPCBodyCheckInteract : MonoBehaviour, IInteractable
         }
 
         var panel = ui != null ? ui : BodyCheckUI.Instance;
+        if (panel == null)
+        {
+            // เผื่อ instance ยังไม่ถูกสร้าง
+            panel = FindObjectOfType<BodyCheckUI>(true);
+        }
+
         if (panel == null)
         {
             Debug.LogError("❌ BodyCheckUI ไม่พบในฉาก");

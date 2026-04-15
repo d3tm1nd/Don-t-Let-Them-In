@@ -3,17 +3,23 @@ using System;
 
 /// <summary>
 /// โปรไฟล์การตรวจร่างกายของ NPC (สุ่มใหม่ทุกวัน แต่คงที่ภายในวันเดียว)
-/// - ตรวจ 3 อย่าง: ตา (ซ้าย/ขวา), มือ (ซ้าย/ขวา), อุณหภูมิ (ตัวเลข)
-/// - ตา/มือมี 4 แบบ (2 ข้าง => 4 combination):
+/// ตรวจ 3 อย่าง: ตา (ซ้าย/ขวา), มือ (ซ้าย/ขวา), อุณหภูมิ (ตัวเลข)
+///
+/// เงื่อนไขสุ่ม:
+/// - ตา/มือมี 4 แบบ (2 บิต):
 ///   00 = ปกติทั้งสองข้าง, 01 = ผิดปกติขวา, 10 = ผิดปกติซ้าย, 11 = ผิดปกติทั้งสองข้าง
 /// - อุณหภูมิสุ่มจากช่วงที่กำหนดต่อ NPC (minTemperature..maxTemperature)
+///
+/// เงื่อนไขการ "ตรวจครบ":
+/// - ต้องตรวจ ตา + มือ + อุณหภูมิ อย่างน้อยอย่างละ 1 ครั้งในวันนั้น
+/// - ค่าการตรวจ (checked*) จะถูกรีเซ็ตเมื่อขึ้นวันใหม่
 /// </summary>
 public class NPCHealthProfile : MonoBehaviour
 {
     [Header("ข้อมูล NPC")]
     public string npcDisplayName = "NPC";
 
-    [Tooltip("ไอดีคงที่สำหรับสุ่มแบบ deterministic (ถ้าว่างจะใช้ชื่อ GameObject)")]
+    [Tooltip("ไอดีคงที่สำหรับสุ่มแบบ deterministic (ถ้าว่างจะใช้ชื่อ GameObject)\nแนะนำ: human_jone, human_penny, ghost_g3 เป็นต้น")]
     public string npcStableId = "";
 
     [Header("ช่วงอุณหภูมิ (สุ่มทุกวัน)")]
@@ -21,6 +27,7 @@ public class NPCHealthProfile : MonoBehaviour
     public float maxTemperature = 42f;
 
     [Header("ความละเอียดทศนิยมของอุณหภูมิ")]
+    [Range(0,3)]
     public int temperatureDecimalPlaces = 1;
 
     // ---- ผลตรวจของ "วันปัจจุบัน" ----
@@ -30,12 +37,23 @@ public class NPCHealthProfile : MonoBehaviour
     [NonSerialized] public bool leftHandAbnormal;
     [NonSerialized] public bool rightHandAbnormal;
 
-    private int _generatedDay = -1;
+    // ---- สถานะ "ตรวจแล้วหรือยัง" (รีเซ็ตทุกวัน) ----
+    [NonSerialized] public bool checkedEyes;
+    [NonSerialized] public bool checkedHands;
+    [NonSerialized] public bool checkedTemp;
 
+    private int _generatedDay = -1;
     public int GeneratedDay => _generatedDay;
+
+    public bool IsFullyChecked => checkedEyes && checkedHands && checkedTemp;
+
+    public void MarkEyesChecked()  => checkedEyes = true;
+    public void MarkHandsChecked() => checkedHands = true;
+    public void MarkTempChecked()  => checkedTemp = true;
 
     /// <summary>
     /// สุ่มผลตรวจสำหรับวันนั้น ๆ (ถ้าวันเดิมจะไม่สุ่มซ้ำ)
+    /// และรีเซ็ต checked* เมื่อขึ้นวันใหม่
     /// </summary>
     public void EnsureGeneratedForDay(int day)
     {
@@ -43,7 +61,12 @@ public class NPCHealthProfile : MonoBehaviour
 
         _generatedDay = day;
 
-        // สุ่มแบบ deterministic เพื่อให้ "คงที่ในวันเดียว" แม้โหลดซีนใหม่
+        // รีเซ็ตสถานะการตรวจเมื่อขึ้นวันใหม่
+        checkedEyes = false;
+        checkedHands = false;
+        checkedTemp = false;
+
+        // สุ่มแบบ deterministic ให้คงที่ในวันเดียว (แม้โหลดซีนใหม่)
         string id = string.IsNullOrEmpty(npcStableId) ? gameObject.name : npcStableId;
         int seed = HashToSeed(id, day);
         var rng = new System.Random(seed);
