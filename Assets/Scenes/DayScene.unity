@@ -1890,7 +1890,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 675346337}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 603e2929fb1b062499cdcffb238aa111, type: 3}
+  m_Script: {fileID: 11500000, guid: 7c59464d1bee36c479a54258bc22e47e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NPCSpawner
   rules: {fileID: 11400000, guid: d4af31d513f78524195c1dfb9fb165f5, type: 2}
@@ -1910,11 +1910,15 @@ MonoBehaviour:
   - {fileID: 4226302323286500380, guid: 51ea77798eba9f74f8c9897a533d4294, type: 3}
   ghostInsidePrefabs:
   - {fileID: 69851806298905859, guid: 18db90ce80f14a94e8a8be988583a15f, type: 3}
+  humanStartIndexDay1: 0
+  humanStartIndexDay2: 2
+  ghostStartIndexDay1: 0
+  ghostStartIndexDay2: 2
   shuffleOrder: 1
   initialOutsideDelay: 1
   insideSpawnDelay: 0.5
   newOutsideDelay: 2.5
-  knockSound: {fileID: 8300000, guid: e34d07a77b9943e45bf6c05698d16c52, type: 3}
+  knockSound: {fileID: 0}
   spawnedOutsideCount: 0
   acceptedCount: 0
 --- !u!1 &705875387

@@ -3,29 +3,31 @@ using System.Collections;
 using System.Collections.Generic;
 
 /// <summary>
-/// NPCSpawner (2-day rules) - PAIR outside+inside per visitor (Fixes Jone/Penny mismatch)
+/// NPCSpawner (2-day rules) - PAIRED + OFFSET PER DAY
 ///
-/// Problem fixed:
-/// - Previously: OUTSIDE door prefab was picked randomly from humanOutsideDoorPrefabs
-///   while INSIDE prefab was chosen sequentially by kind. This can mismatch (e.g., Penny outside -> Jone inside).
+/// Purpose:
+/// - Keep OUTSIDE door prefab and INSIDE prefab matched as a pair (fixes identity mismatch).
+/// - Allow Day 2 to use a NEW set of NPCs (humans/ghosts) by starting from an offset index.
 ///
-/// New behavior:
-/// - We build a queue of VisitorPlan where each entry contains BOTH:
-///     - outsideDoorPrefab
-///     - insidePrefab
-///     - kind
-///   So the OUTSIDE identity always matches the INSIDE identity.
+/// How to set up arrays (recommended):
+/// - Put Day1 pairs first, then Day2 pairs.
+///   Human:
+///     humanOutsideDoorPrefabs: [0]=JoneDoor, [1]=PennyDoor, [2]=MarkDoor, [3]=LizaDoor
+///     humanInsidePrefabs:      [0]=JoneInside,[1]=PennyInside,[2]=MarkInside,[3]=LizaInside
+///   Ghost (optional):
+///     ghostOutsideDoorPrefabs: [0]=G1Door,[1]=G2Door,[2]=G3Door
+///     ghostInsidePrefabs:      [0]=G1Inside,[1]=G2Inside,[2]=G3Inside
 ///
-/// Setup requirement:
-/// - humanOutsideDoorPrefabs and humanInsidePrefabs MUST be the same length and aligned by index.
-///   Example:
-///     [0] JoneDoor, [1] PennyDoor
-///     [0] JoneInside, [1] PennyInside
-/// - Same idea for ghost arrays (optional).
+/// Then set offsets:
+/// - humanStartIndexDay1 = 0
+/// - humanStartIndexDay2 = 2   (so Day2 uses Mark/Liza instead of Jone/Penny)
+/// - ghostStartIndexDay1 = 0
+/// - ghostStartIndexDay2 = 2   (so Day2 uses G3 instead of G1/G2)
 ///
 /// Notes:
-/// - Door prefabs must have DoorNPC component.
-/// - Uses TwoDayRules counts to decide how many Human/Ghost visitors to enqueue per day.
+/// - Arrays are paired by index (outside[i] matches inside[i]).
+/// - If count exceeds available unique pairs, it wraps with modulo.
+/// - Door prefabs MUST have DoorNPC component.
 /// </summary>
 public class NPCSpawner : MonoBehaviour
 {
@@ -44,8 +46,19 @@ public class NPCSpawner : MonoBehaviour
     public GameObject[] humanInsidePrefabs;
     public GameObject[] ghostInsidePrefabs;
 
+    [Header("Per-Day Pair Offsets")]
+    [Tooltip("Start index into HUMAN pairs for Day 1")]
+    public int humanStartIndexDay1 = 0;
+    [Tooltip("Start index into HUMAN pairs for Day 2")]
+    public int humanStartIndexDay2 = 0;
+
+    [Tooltip("Start index into GHOST pairs for Day 1")]
+    public int ghostStartIndexDay1 = 0;
+    [Tooltip("Start index into GHOST pairs for Day 2")]
+    public int ghostStartIndexDay2 = 0;
+
     [Header("Plan Options")]
-    [Tooltip("If true, shuffle the visitor order for the day (still keeps pairs matched)")]
+    [Tooltip("Shuffle the final visitor order for the day (pairs remain matched).")]
     public bool shuffleOrder = true;
 
     [Header("Delays")]
@@ -66,7 +79,6 @@ public class NPCSpawner : MonoBehaviour
     public int acceptedCount = 0;
 
     private int insidePointIndex = 0;
-
     private bool spawningOutside = false;
 
     void Awake()
@@ -109,13 +121,12 @@ public class NPCSpawner : MonoBehaviour
 
         var plans = new List<VisitorPlan>();
 
-        // Build human paired plans
-        AddPairedPlans(plans, NPCKind.Human, humans, humanOutsideDoorPrefabs, humanInsidePrefabs);
+        int humanStart = (day <= 1) ? humanStartIndexDay1 : humanStartIndexDay2;
+        int ghostStart = (day <= 1) ? ghostStartIndexDay1 : ghostStartIndexDay2;
 
-        // Build ghost paired plans
-        AddPairedPlans(plans, NPCKind.Ghost, ghosts, ghostOutsideDoorPrefabs, ghostInsidePrefabs);
+        AddPairedPlansWithOffset(plans, NPCKind.Human, humans, humanOutsideDoorPrefabs, humanInsidePrefabs, humanStart);
+        AddPairedPlansWithOffset(plans, NPCKind.Ghost, ghosts, ghostOutsideDoorPrefabs, ghostInsidePrefabs, ghostStart);
 
-        // Optional shuffle (still matched)
         if (shuffleOrder)
         {
             for (int i = 0; i < plans.Count; i++)
@@ -132,10 +143,10 @@ public class NPCSpawner : MonoBehaviour
 
         todayTotal = plans.Count;
 
-        Debug.Log($"📅 NPCSpawner plan (PAIRED) | Day {dayStamp} | total={todayTotal} (H={humans}, G={ghosts})");
+        Debug.Log($"📅 NPCSpawner plan (PAIRED+OFFSET) | Day {dayStamp} | total={todayTotal} (H={humans}, G={ghosts}) | humanStart={humanStart} ghostStart={ghostStart}");
     }
 
-    void AddPairedPlans(List<VisitorPlan> plans, NPCKind kind, int count, GameObject[] outsideArr, GameObject[] insideArr)
+    void AddPairedPlansWithOffset(List<VisitorPlan> plans, NPCKind kind, int count, GameObject[] outsideArr, GameObject[] insideArr, int startIndex)
     {
         if (count <= 0) return;
 
@@ -155,16 +166,19 @@ public class NPCSpawner : MonoBehaviour
             return;
         }
 
-        // If arrays are not same length, warn but still proceed with min length.
         if (outsideLen != insideLen)
         {
             Debug.LogWarning($"⚠️ NPCSpawner: {kind} outside/inside arrays length mismatch. Using min={pairLen}. outside={outsideLen}, inside={insideLen}");
         }
 
-        // Create plans in index order and repeat (wrap) if count > pairLen
+        // Normalize start index
+        int normalizedStart = startIndex % pairLen;
+        if (normalizedStart < 0) normalizedStart += pairLen;
+
+        // Create plans in offset order and wrap if needed
         for (int i = 0; i < count; i++)
         {
-            int idx = i % pairLen;
+            int idx = (normalizedStart + i) % pairLen;
             GameObject outPrefab = outsideArr[idx];
             GameObject inPrefab = insideArr[idx];
 
