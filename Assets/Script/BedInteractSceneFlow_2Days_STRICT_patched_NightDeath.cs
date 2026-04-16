@@ -2,9 +2,11 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 /// <summary>
-/// STRICT bed scene flow.
+/// STRICT bed scene flow (PATCHED):
 /// - Requires completionProvider and requireCompletion.
 /// - If completionProvider is missing or does not implement ICompletionChecker -> blocks.
+/// - PATCH: เมื่อจบ Night จะเรียก NightHumanDeathSystem.ProcessEndOfNight() (สุ่มคนตายถ้ามีผี)
+/// - PATCH: Night -> Morning จะเพิ่มวันด้วย PhaseManager.GoMorning()
 /// </summary>
 [RequireComponent(typeof(Collider))]
 public class BedInteractSceneFlow_2Days : MonoBehaviour, IInteractable
@@ -94,6 +96,7 @@ public class BedInteractSceneFlow_2Days : MonoBehaviour, IInteractable
         int day = Mathf.Max(1, PhaseManager.Instance.currentDay);
         int playableDays = (rules != null) ? Mathf.Max(1, rules.playableDays) : 2;
 
+        // Morning -> Day
         if (phase == PhaseManager.GamePhase.Morning)
         {
             PhaseManager.Instance.SetPhase(PhaseManager.GamePhase.Day);
@@ -101,6 +104,7 @@ public class BedInteractSceneFlow_2Days : MonoBehaviour, IInteractable
             return;
         }
 
+        // Day -> Night
         if (phase == PhaseManager.GamePhase.Day)
         {
             PhaseManager.Instance.SetPhase(PhaseManager.GamePhase.Night);
@@ -108,8 +112,14 @@ public class BedInteractSceneFlow_2Days : MonoBehaviour, IInteractable
             return;
         }
 
+        // Night -> (EndOfNight logic) -> Morning or End
         if (phase == PhaseManager.GamePhase.Night)
         {
+            // PATCH: สุ่มคนตายตอนจบคืน (ทำงานครั้งเดียวต่อวันในระบบ)
+            if (NightHumanDeathSystem.Instance != null)
+                NightHumanDeathSystem.Instance.ProcessEndOfNight();
+
+            // Endgame check
             if (day >= playableDays)
             {
                 if (endEvaluator == null) endEvaluator = FindObjectOfType<EndGameEvaluator2Days>(true);
@@ -118,7 +128,8 @@ public class BedInteractSceneFlow_2Days : MonoBehaviour, IInteractable
                 return;
             }
 
-            PhaseManager.Instance.GoMorning();   // ✅ เพิ่มวัน + ตั้ง phase Morning
+            // PATCH: เพิ่มวัน + ไปเช้าวันถัดไป
+            PhaseManager.Instance.GoMorning();
             LoadSceneSafe(morningSceneName);
             return;
         }

@@ -1379,7 +1379,7 @@ GameObject:
   - component: {fileID: 793001312}
   - component: {fileID: 793001311}
   - component: {fileID: 793001310}
-  - component: {fileID: 793001309}
+  - component: {fileID: 793001314}
   m_Layer: 6
   m_Name: Bed
   m_TagString: Untagged
@@ -1387,28 +1387,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &793001309
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 793001308}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3597311d9157d314985365b0b5a51cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BedInteractSceneFlow_2Days
-  requiredLayerName: Interactable
-  morningSceneName: MorningScene
-  daySceneName: DayScene
-  nightSceneName: NightScene
-  rules: {fileID: 11400000, guid: d4af31d513f78524195c1dfb9fb165f5, type: 2}
-  requireCompletion: 1
-  completionProvider: {fileID: 1547956291}
-  endEvaluator: {fileID: 0}
-  sleepSfx: {fileID: 0}
-  blockedSfx: {fileID: 0}
 --- !u!65 &793001310
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1501,6 +1479,28 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &793001314
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 793001308}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6fb246af548a5534fb85088b0c340295, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BedInteractSceneFlow_2Days
+  requiredLayerName: Interactable
+  morningSceneName: MorningScene
+  daySceneName: DayScene
+  nightSceneName: NightScene
+  rules: {fileID: 11400000, guid: d4af31d513f78524195c1dfb9fb165f5, type: 2}
+  requireCompletion: 1
+  completionProvider: {fileID: 1547956291}
+  endEvaluator: {fileID: 0}
+  sleepSfx: {fileID: 0}
+  blockedSfx: {fileID: 0}
 --- !u!1 &808783338
 GameObject:
   m_ObjectHideFlags: 0

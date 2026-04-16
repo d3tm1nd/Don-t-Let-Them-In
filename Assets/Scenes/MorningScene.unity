@@ -3103,7 +3103,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 892687544}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3597311d9157d314985365b0b5a51cbb, type: 3}
+  m_Script: {fileID: 11500000, guid: 6fb246af548a5534fb85088b0c340295, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BedInteractSceneFlow_2Days
   requiredLayerName: Interactable
@@ -3218,7 +3218,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1055170015}
-  - component: {fileID: 1055170014}
+  - component: {fileID: 1055170016}
   m_Layer: 0
   m_Name: Spawner
   m_TagString: Untagged
@@ -3226,18 +3226,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1055170014
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1055170013}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 13c6d7b2c93e97e4c91078dd17a90b5e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NightNPCSpawner
 --- !u!4 &1055170015
 Transform:
   m_ObjectHideFlags: 0
@@ -3253,6 +3241,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1055170016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1055170013}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f7f409dc5d3e1649898c7ea591aa471, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NightNPCSpawner
 --- !u!1 &1066592093
 GameObject:
   m_ObjectHideFlags: 0
@@ -5881,10 +5881,11 @@ GameObject:
   - component: {fileID: 1942742121}
   - component: {fileID: 1942742119}
   - component: {fileID: 1942742118}
-  - component: {fileID: 1942742117}
   - component: {fileID: 1942742124}
   - component: {fileID: 1942742123}
   - component: {fileID: 1942742125}
+  - component: {fileID: 1942742127}
+  - component: {fileID: 1942742126}
   m_Layer: 0
   m_Name: GameSystem
   m_TagString: Untagged
@@ -5892,18 +5893,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1942742117
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1942742116}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e25b53d9238e8a946b6e2fd9e2f2d570, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NPCCheckRerollOnMorning
 --- !u!114 &1942742118
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6010,6 +5999,34 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PhaseManager
   currentPhase: 0
   currentDay: 1
+--- !u!114 &1942742126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1942742116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec0b40a574f0f34419a8c864efcee83c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DeathRegistry
+--- !u!114 &1942742127
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1942742116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81afed0942e041e49b9353afe262f3e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NightHumanDeathSystem
+  deathChance: 0.35
+  scaleChanceWithGhostCount: 1
+  extraPerGhost: 0.1
+  debugLogs: 1
 --- !u!1 &1955475024
 GameObject:
   m_ObjectHideFlags: 0
