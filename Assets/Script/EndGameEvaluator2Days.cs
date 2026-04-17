@@ -1,16 +1,22 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-// ประเมินแพ้/ชนะหลังจบ Day 2 (กลางคืนรอบที่ 2)
-// เงื่อนไขจากผู้ใช้:
-// - ต้องมี NPC อยู่ในบ้านอย่างน้อย 3 ตัว
-// - ถ้ามีผีอยู่ในกลุ่ม "แค่ 1 ตัว" = แพ้
-// หมายเหตุ: ตามข้อความที่ให้มา 0 ผีถือว่าไม่เข้าเงื่อนไขแพ้ (ชนะได้) และ 2+ ผีก็ไม่เข้าเงื่อนไขแพ้
+/// <summary>
+/// EndGameEvaluator2Days (UPDATED RULES)
+///
+/// กติกาใหม่:
+/// 1) ถ้ามีผีอย่างน้อย 1 ตัว => แพ้ (ไม่สนจำนวนคน)
+/// 2) ถ้าผี = 0 และมีคนอย่างน้อย 3 คน => ชนะ
+/// 3) กรณีอื่น ๆ => แพ้
+///
+/// แหล่งข้อมูล:
+/// - อ่านจำนวนผู้รอด/อยู่ในบ้านจาก NPCDataManager.Instance.acceptedNPCs (จำนวนรายการ)
+/// - นับผีจาก NPCTypeTag.kind == NPCKind.Ghost บน prefab ที่ถูกบันทึกใน NPCData
+/// </summary>
 public class EndGameEvaluator2Days : MonoBehaviour
 {
     [Header("Rules")]
-    public int minNPCInHouse = 3;
-    public int loseIfGhostCountEquals = 1;
+    public int minHumansToWinWhenNoGhost = 3;
 
     [Header("Scenes")]
     public string winSceneName = "EndWin";
@@ -29,16 +35,19 @@ public class EndGameEvaluator2Days : MonoBehaviour
             for (int i = 0; i < list.Count; i++)
             {
                 var d = list[i];
-                if (d.prefab == null || d.prefab == null) continue;
+                if (d.prefab == null) continue;
+
                 var tag = d.prefab.GetComponent<NPCTypeTag>();
-                if (tag != null && tag.kind == NPCKind.Ghost) ghosts++;
+                if (tag != null && tag.kind == NPCKind.Ghost)
+                    ghosts++;
             }
         }
 
-        bool lose = (total < minNPCInHouse) || (ghosts == loseIfGhostCountEquals);
+        // กติกาใหม่
+        bool win = (ghosts == 0) && (total >= minHumansToWinWhenNoGhost);
+        bool lose = !win; // กรณีอื่น ๆ แพ้
 
-        Debug.Log($"🏁 END CHECK | total={total}, ghosts={ghosts} => {(lose ? "LOSE" : "WIN")}");
-
-        SceneManager.LoadScene(lose ? loseSceneName : winSceneName);
+        Debug.Log($"🏁 END CHECK | total={total}, ghosts={ghosts} => {(win ? "WIN" : "LOSE")}");
+        SceneManager.LoadScene(win ? winSceneName : loseSceneName);
     }
 }

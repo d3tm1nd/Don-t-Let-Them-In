@@ -3,23 +3,10 @@ using UnityEngine.UI;
 using TMPro;
 
 /// <summary>
-/// UI ตรวจร่างกายแบบ "ไอคอน" (ตา/มือ) + อุณหภูมิเป็น Text
-///
-/// เงื่อนไข Energy:
-/// - กด E ที่ NPC เปิด UI: ไม่ลด Energy
-/// - กดปุ่มตรวจ (ตา/มือ/อุณหภูมิ): ลด Energy 1
-/// - Energy หมด: ล็อกปุ่มตรวจ (กดไม่ได้)
-///
-/// เงื่อนไขการตัดสินใจ (ยิง/ไม่ยิง):
-/// - ต้องตรวจครบ 3 อย่าง (ตา + มือ + อุณหภูมิ) ก่อน
-/// - จากนั้นจะแสดง Decision Panel ให้เลือก:
-///   - ยิงทิ้ง: ทำลาย GameObject ของ NPC เป้าหมาย (ปรับเองได้)
-///   - ไม่ยิง: ปิด UI แล้วปล่อย NPC อยู่ต่อ
-///
-/// Mouse/Cursor:
-/// - ตอนเปิด UI จะปลดล็อกเมาส์ + แสดง Cursor
-/// - ตอนปิด UI จะล็อกเมาส์กลับ (ตั้งค่าได้)
-/// - สามารถลากสคริปต์ที่ควรปิดระหว่าง UI เปิด (MouseLook/InteractionRay ฯลฯ) ได้
+/// BodyCheckUI (patched):
+/// - เมื่อเลือก "ยิงทิ้ง" จะลบข้อมูล NPC ออกจาก NPCDataManager.acceptedNPCs ด้วย
+/// - ใช้ npcStableId จาก NPCHealthProfile ในการ match (fallback: prefab.name)
+/// - (optional) สามารถ mark ตายใน DeathRegistry ได้ถ้ามีในโปรเจกต์
 /// </summary>
 public class BodyCheckUI : MonoBehaviour
 {
@@ -67,6 +54,10 @@ public class BodyCheckUI : MonoBehaviour
     [SerializeField] private CursorLockMode lockModeWhenClosed = CursorLockMode.Locked;
     [SerializeField] private bool hideCursorWhenClosed = true;
 
+    [Header("Shoot Options")]
+    [Tooltip("ถ้าเปิด จะพยายาม MarkDead ลง DeathRegistry ด้วย (ถ้ามีในโปรเจกต์)")]
+    public bool markDeadInRegistry = true;
+
     private NPCHealthProfile _target;
 
     void Awake()
@@ -74,13 +65,9 @@ public class BodyCheckUI : MonoBehaviour
         if (Instance == null) Instance = this;
         else { Destroy(gameObject); return; }
 
-        // กันลืมลาก root
         if (root == null) root = gameObject;
-
-        // ปิด UI ตั้งแต่เริ่มเกม
         root.SetActive(false);
 
-        // ผูกปุ่ม (กันลืมตั้ง onClick)
         if (eyeButton != null) eyeButton.onClick.AddListener(OnCheckEyes);
         if (handButton != null) handButton.onClick.AddListener(OnCheckHands);
         if (tempButton != null) tempButton.onClick.AddListener(OnCheckTemperature);
@@ -106,7 +93,6 @@ public class BodyCheckUI : MonoBehaviour
 
     public bool IsOpen => root != null && root.activeSelf;
 
-    /// <summary>เปิด UI (ฟรี ไม่ลด Energy)</summary>
     public void Open(NPCHealthProfile target)
     {
         _target = target;
@@ -120,7 +106,6 @@ public class BodyCheckUI : MonoBehaviour
 
         if (npcNameText != null) npcNameText.text = _target.npcDisplayName;
 
-        // รีเซ็ตการแสดงผล
         ShowEyes(false);
         ShowHands(false);
         ShowTemp(false);
@@ -229,8 +214,14 @@ public class BodyCheckUI : MonoBehaviour
         if (_target == null) return;
         if (!_target.IsFullyChecked) return;
 
-        // ยิงทิ้ง (แบบง่ายสุด): ลบ GameObject
-        // ถ้าคุณอยากทำอนิเมชัน/เสียง/เปลี่ยนสถานะ ให้แก้ตรงนี้ได้
+        // 1) ลบข้อมูลจาก NPCDataManager ก่อน (กัน spawn กลับมา)
+        RemoveFromNPCDataManager(_target);
+
+        // 2) optional: mark dead ลง DeathRegistry (ถ้ามี)
+        if (markDeadInRegistry)
+            TryMarkDead(_target);
+
+        // 3) ลบ GameObject ในฉาก
         Destroy(_target.gameObject);
 
         Close();
@@ -240,9 +231,59 @@ public class BodyCheckUI : MonoBehaviour
     {
         if (_target == null) return;
         if (!_target.IsFullyChecked) return;
-
-        // ไม่ยิง: ปิด UI เฉย ๆ
         Close();
+    }
+
+    // ===================== Remove from NPCDataManager =====================
+
+    private void RemoveFromNPCDataManager(NPCHealthProfile target)
+    {
+        if (target == null) return;
+        if (NPCDataManager.Instance == null) return;
+        if (NPCDataManager.Instance.acceptedNPCs == null) return;
+
+        string victimId = string.IsNullOrEmpty(target.npcStableId) ? target.gameObject.name : target.npcStableId;
+
+        var list = NPCDataManager.Instance.acceptedNPCs;
+        int removed = 0;
+
+        for (int i = list.Count - 1; i >= 0; i--)
+        {
+            var entry = list[i];
+            if (entry.prefab == null) continue;
+
+            var prof = entry.prefab.GetComponent<NPCHealthProfile>();
+            string id = (prof != null && !string.IsNullOrEmpty(prof.npcStableId)) ? prof.npcStableId : entry.prefab.name;
+
+            if (id == victimId)
+            {
+                list.RemoveAt(i);
+                removed++;
+            }
+        }
+
+        if (removed > 0)
+            Debug.Log($"🗑️ Removed {removed} NPCData entries for id={victimId}");
+        else
+            Debug.LogWarning($"⚠️ No NPCData entry removed for id={victimId} (check npcStableId on prefab vs instance)");
+    }
+
+    private void TryMarkDead(NPCHealthProfile target)
+    {
+        // ใช้ reflection เพื่อไม่บังคับว่าต้องมี DeathRegistry ในโปรเจกต์
+        var regType = System.Type.GetType("DeathRegistry");
+        if (regType == null) return;
+
+        // DeathRegistry.Instance
+        var instProp = regType.GetProperty("Instance");
+        object inst = instProp != null ? instProp.GetValue(null) : null;
+        if (inst == null) return;
+
+        var markMethod = regType.GetMethod("MarkDead");
+        if (markMethod == null) return;
+
+        string id = string.IsNullOrEmpty(target.npcStableId) ? target.gameObject.name : target.npcStableId;
+        markMethod.Invoke(inst, new object[] { id });
     }
 
     // ===================== Energy / Lock =====================
@@ -264,7 +305,6 @@ public class BodyCheckUI : MonoBehaviour
         bool ok = EnergyManager.Instance.TrySpend(1);
         RefreshEnergyUI();
         RefreshLockState();
-
         return ok;
     }
 
@@ -294,7 +334,6 @@ public class BodyCheckUI : MonoBehaviour
 
     private void EnterUIMode(bool uiOpen)
     {
-        // Cursor
         if (uiOpen && showCursorWhenOpen)
         {
             Cursor.visible = true;
@@ -306,7 +345,6 @@ public class BodyCheckUI : MonoBehaviour
             Cursor.visible = !hideCursorWhenClosed;
         }
 
-        // Disable/Enable other scripts while UI open
         if (disableWhileOpen != null)
         {
             for (int i = 0; i < disableWhileOpen.Length; i++)
