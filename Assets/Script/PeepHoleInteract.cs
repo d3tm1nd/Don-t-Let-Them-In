@@ -3,12 +3,17 @@
 public class PeepHoleInteract : MonoBehaviour, IInteractable
 {
     [Header("Peep Viewpoint")]
-    public Transform peepViewPoint;            // จุด/m มองช่องตาแมว
-    public float peepFOV = 30f;                // มุมมองตอนส่อง
+    public Transform peepViewPoint;      // Position/rotation of peephole view
+    public float peepFOV = 30f;          // FOV while peeping
 
     [Header("Controls (optional)")]
-    [Tooltip("คอมโพเนนต์ที่ต้องปิดชั่วคราวระหว่างส่อง (เช่น ตัวหมุนกล้อง/ตัวเดิน)")]
+    [Tooltip("Components to disable while peeping (e.g., movement/look controllers)")]
     public MonoBehaviour[] disableWhilePeeping;
+
+    [Header("Camera Lock (auto)")]
+    [Tooltip("If assigned, will set MouseLook.canLook=false while peeping, then true on exit. If left empty, it will try to auto-find on Camera.main.")]
+    public MouseLook cameraLook;
+    public bool useCanLookFlag = true;
 
     private Camera playerCam;
     private float defaultFOV;
@@ -24,16 +29,27 @@ public class PeepHoleInteract : MonoBehaviour, IInteractable
         playerCam = Camera.main;
         if (playerCam == null)
         {
-            Debug.LogError("❌ PeepHoleInteract: ไม่พบ Camera.main");
+            Debug.LogError("❌ PeepHoleInteract: Camera.main not found");
             enabled = false;
             return;
         }
         defaultFOV = playerCam.fieldOfView;
+
+        // Auto-bind MouseLook on the camera if not set
+        if (cameraLook == null)
+        {
+            cameraLook = playerCam.GetComponent<MouseLook>();
+            if (cameraLook == null)
+            {
+                // try in parents as fallback
+                cameraLook = playerCam.GetComponentInParent<MouseLook>();
+            }
+        }
     }
 
     public void Interact()
     {
-        // รองรับ toggle ด้วย (แม้ระบบหลักจะใช้ hold F)
+        // Support toggle too (even though hold-to-peek is handled by PeepHoleRay)
         if (!isPeeping) StartPeep(); else StopPeep();
     }
 
@@ -42,23 +58,29 @@ public class PeepHoleInteract : MonoBehaviour, IInteractable
         if (isPeeping || peepViewPoint == null || playerCam == null) return;
         isPeeping = true;
 
-        // บันทึกสภาพกล้องเดิม
+        // Save original camera state
         originalCamPos = playerCam.transform.position;
         originalCamRot = playerCam.transform.rotation;
         originalCamParent = playerCam.transform.parent;
 
-        // ปิดคอมโพเนนต์ควบคุมที่อาจแทรกแซงกล้อง/การเคลื่อนไหว
+        // Disable conflicting controllers (if any)
         SetControlsEnabled(false);
 
-        // ย้ายกล้องไปยังตำแหน่งช่องมอง + ปรับมุมมอง
+        // 🔒 Lock camera look via MouseLook.canLook
+        if (useCanLookFlag && cameraLook != null)
+        {
+            cameraLook.canLook = false;
+        }
+
+        // Move camera to peephole view
         playerCam.transform.position = peepViewPoint.position;
         playerCam.transform.rotation = peepViewPoint.rotation;
         playerCam.fieldOfView = peepFOV;
 
-        // (ถ้าต้องให้อิงตามประตูที่ไหว: สามารถ SetParent ได้)
+        // If you need to follow moving door/peephole, you can parent the camera:
         // playerCam.transform.SetParent(peepViewPoint, true);
 
-        Debug.Log("เข้าโหมดส่องช่องตาแมว");
+        Debug.Log("Enter peephole mode");
     }
 
     public void StopPeep()
@@ -66,15 +88,21 @@ public class PeepHoleInteract : MonoBehaviour, IInteractable
         if (!isPeeping || playerCam == null) return;
         isPeeping = false;
 
-        // คืนค่ากล้องเดิม
+        // Restore camera
         playerCam.fieldOfView = defaultFOV;
-        // playerCam.transform.SetParent(originalCamParent, true); // ถ้าเคย SetParent
+        // playerCam.transform.SetParent(originalCamParent, true); // if you parented in StartPeep
         playerCam.transform.SetPositionAndRotation(originalCamPos, originalCamRot);
 
-        // เปิดคอมโพเนนต์ควบคุมคืน
+        // 🔓 Unlock camera look via MouseLook.canLook
+        if (useCanLookFlag && cameraLook != null)
+        {
+            cameraLook.canLook = true;
+        }
+
+        // Re-enable controllers
         SetControlsEnabled(true);
 
-        Debug.Log("ออกจากโหมดส่องช่องตาแมว");
+        Debug.Log("Exit peephole mode");
     }
 
     private void SetControlsEnabled(bool enabled)
@@ -88,13 +116,20 @@ public class PeepHoleInteract : MonoBehaviour, IInteractable
 
     void OnDisable()
     {
-        // กันกรณีซีนเปลี่ยน/วัตถุถูกปิดระหว่างส่อง
+        // Safety: if object disabled while peeping, restore camera & controls
         if (isPeeping)
         {
-            // อย่าเรียก Debug ซ้ำมากไปใน lifecycle
-            playerCam.fieldOfView = defaultFOV;
-            // playerCam.transform.SetParent(originalCamParent, true);
-            playerCam.transform.SetPositionAndRotation(originalCamPos, originalCamRot);
+            if (playerCam != null)
+            {
+                playerCam.fieldOfView = defaultFOV;
+                playerCam.transform.SetPositionAndRotation(originalCamPos, originalCamRot);
+            }
+
+            if (useCanLookFlag && cameraLook != null)
+            {
+                cameraLook.canLook = true;
+            }
+
             SetControlsEnabled(true);
             isPeeping = false;
         }

@@ -1306,6 +1306,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2797896827447717785, guid: 546fbdad0014f1843beb19facd91819b, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 2797896827447717785, guid: 546fbdad0014f1843beb19facd91819b, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 2797896827447717785, guid: 546fbdad0014f1843beb19facd91819b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 90
+      objectReference: {fileID: 0}
     - target: {fileID: 6424270456704572960, guid: 546fbdad0014f1843beb19facd91819b, type: 3}
       propertyPath: m_Name
       value: DoorV1 1

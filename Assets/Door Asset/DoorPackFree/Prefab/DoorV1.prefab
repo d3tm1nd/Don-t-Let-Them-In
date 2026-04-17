@@ -190,6 +190,8 @@ MonoBehaviour:
   peepFOV: 30
   disableWhilePeeping:
   - {fileID: 0}
+  cameraLook: {fileID: 0}
+  useCanLookFlag: 1
 --- !u!1 &6130508499361754837
 GameObject:
   m_ObjectHideFlags: 0
