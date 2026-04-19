@@ -252,12 +252,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CreditsUIController
   creditsText: {fileID: 1863599177}
-  creditsContent: 'CREDITS
-
-
-    Created by: YOUR NAME
-
-'
+  creditsContent: "CREDITS\n\n6507448 \u0E08\u0E34\u0E13\u0E13\u0E27\u0E31\u0E15\u0E23
+    \u0E0D\u0E32\u0E13\u0E42\u0E01\u0E21\u0E38\u0E17 (Programmer)\n6607982 \u0E08\u0E15\u0E38\u0E1E\u0E23
+    \u0E2A\u0E38\u0E19\u0E17\u0E23\u0E1B\u0E31\u0E49\u0E19 (Artist)\n6606388 \u0E2A\u0E34\u0E07\u0E2B\u0E32
+    \u0E22\u0E48\u0E32\u0E19\u0E2A\u0E32\u0E01\u0E25 (Artist)"
   mainMenuSceneName: MainMenu
 --- !u!4 &478623607
 Transform:
