@@ -2333,7 +2333,7 @@ MonoBehaviour:
   humanStartIndexDay2: 2
   ghostStartIndexDay1: 0
   ghostStartIndexDay2: 2
-  shuffleOrder: 1
+  shuffleOrder: 0
   initialOutsideDelay: 1
   insideSpawnDelay: 0.5
   newOutsideDelay: 2.5
