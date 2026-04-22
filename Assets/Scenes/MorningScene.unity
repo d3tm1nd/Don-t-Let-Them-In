@@ -3557,7 +3557,6 @@ GameObject:
   - component: {fileID: 1066592097}
   - component: {fileID: 1066592096}
   - component: {fileID: 1066592095}
-  - component: {fileID: 1066592094}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -3565,18 +3564,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1066592094
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1066592093}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1ed1001b6a962544197ade4e16d6456b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnergySystem
 --- !u!114 &1066592095
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4435,6 +4422,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RadioNamesUI
   rootPanel: {fileID: 80467604}
   textOutput: {fileID: 273630928}
+  titleOutput: {fileID: 0}
+  hintOutput: {fileID: 0}
+  hint: "ESC: \u0E1B\u0E34\u0E14"
   closeOnEsc: 1
 --- !u!114 &1406235383
 MonoBehaviour:
@@ -5855,6 +5845,10 @@ MonoBehaviour:
   requiredLayerName: Interactable
   namesUI: {fileID: 1406235382}
   autoFindUIInScene: 1
+  storyData: {fileID: 0}
+  inlinePages: []
+  randomPage: 0
+  cyclePages: 1
 --- !u!65 &1917096794
 BoxCollider:
   m_ObjectHideFlags: 0
