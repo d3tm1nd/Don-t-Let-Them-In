@@ -171,7 +171,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -3461,7 +3461,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -4691,6 +4691,7 @@ MonoBehaviour:
   tempButton: {fileID: 216561822}
   closeButton: {fileID: 918710463}
   decisionPanel: {fileID: 24726320}
+  disableDecisionPanelBackgroundRaycast: 1
   shootButton: {fileID: 411420628}
   keepButton: {fileID: 1993024137}
   eyeLeftImg: {fileID: 2083925203}
@@ -4704,6 +4705,7 @@ MonoBehaviour:
   handAbnormalSprite: {fileID: 0}
   tempIconSprite: {fileID: 0}
   disableWhileOpen: []
+  decisionAvailableImmediately: 1
   showCursorWhenOpen: 1
   lockModeWhenClosed: 1
   hideCursorWhenClosed: 1

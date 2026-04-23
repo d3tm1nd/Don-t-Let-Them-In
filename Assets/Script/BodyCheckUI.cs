@@ -26,8 +26,11 @@ public class BodyCheckUI : MonoBehaviour
     [SerializeField] private Button tempButton;
     [SerializeField] private Button closeButton;
 
-    [Header("Decision Panel (หลังตรวจครบ)")]
+    [Header("Decision Panel")]
+    [Tooltip("ปุ่มยิง/เก็บไว้ (สามารถตั้งให้แสดงทันทีหรือรอให้ตรวจครบ)")]
     [SerializeField] private GameObject decisionPanel;
+    [Tooltip("ถ้า true: ปิด RaycastTarget ของพื้นหลัง decisionPanel เพื่อไม่ให้บังปุ่มตรวจ (Eyes/Hands/Temp) เมื่อ panel ทับกัน")]
+    [SerializeField] private bool disableDecisionPanelBackgroundRaycast = true;
     [SerializeField] private Button shootButton;
     [SerializeField] private Button keepButton;
 
@@ -48,6 +51,10 @@ public class BodyCheckUI : MonoBehaviour
     [Header("Disable scripts while UI open (ลากใส่)")]
     [Tooltip("ลาก InteractionRay / MouseLook / PlayerController ที่ชอบล็อกเมาส์ไว้")]
     [SerializeField] private MonoBehaviour[] disableWhileOpen;
+
+    [Header("Decision Options")]
+    [Tooltip("ถ้าเปิด: เปิดปุ่มยิง/เก็บไว้ทันทีเมื่อเปิด UI (ไม่ต้องตรวจครบ)")]
+    [SerializeField] private bool decisionAvailableImmediately = true;
 
     [Header("Cursor Settings")]
     [SerializeField] private bool showCursorWhenOpen = true;
@@ -75,6 +82,7 @@ public class BodyCheckUI : MonoBehaviour
 
         if (shootButton != null) shootButton.onClick.AddListener(OnShootNPC);
         if (keepButton != null) keepButton.onClick.AddListener(OnKeepNPC);
+        ApplyDecisionPanelRaycastSetup();
 
         SetDecisionVisible(false);
     }
@@ -196,10 +204,8 @@ public class BodyCheckUI : MonoBehaviour
             SetDecisionVisible(false);
             return;
         }
-
-        bool ready = _target.IsFullyChecked;
+        bool ready = decisionAvailableImmediately || _target.IsFullyChecked;
         SetDecisionVisible(ready);
-
         if (shootButton != null) shootButton.interactable = ready;
         if (keepButton != null) keepButton.interactable = ready;
     }
@@ -207,13 +213,12 @@ public class BodyCheckUI : MonoBehaviour
     private void SetDecisionVisible(bool show)
     {
         if (decisionPanel != null) decisionPanel.SetActive(show);
+        if (show) ApplyDecisionPanelRaycastSetup();
     }
 
     private void OnShootNPC()
     {
         if (_target == null) return;
-        if (!_target.IsFullyChecked) return;
-
         // 1) ลบข้อมูลจาก NPCDataManager ก่อน (กัน spawn กลับมา)
         RemoveFromNPCDataManager(_target);
 
@@ -230,7 +235,6 @@ public class BodyCheckUI : MonoBehaviour
     private void OnKeepNPC()
     {
         if (_target == null) return;
-        if (!_target.IsFullyChecked) return;
         Close();
     }
 
@@ -284,6 +288,30 @@ public class BodyCheckUI : MonoBehaviour
 
         string id = string.IsNullOrEmpty(target.npcStableId) ? target.gameObject.name : target.npcStableId;
         markMethod.Invoke(inst, new object[] { id });
+    }
+
+
+    // ===================== Decision Panel Raycast =====================
+    private void ApplyDecisionPanelRaycastSetup()
+    {
+        if (!disableDecisionPanelBackgroundRaycast) return;
+        if (decisionPanel == null) return;
+
+        // ปิด raycastTarget ของ Graphic ที่เป็นพื้นหลัง/ตกแต่ง เพื่อให้คลิกทะลุไปยังปุ่มตรวจได้
+        // แต่จะไม่ปิดของปุ่ม (Button) ภายใน panel
+        var graphics = decisionPanel.GetComponentsInChildren<Graphic>(true);
+        for (int i = 0; i < graphics.Length; i++)
+        {
+            var g = graphics[i];
+            if (g == null) continue;
+
+            // ถ้า object นี้เป็นปุ่ม ให้ปล่อยไว้ (ต้องคลิกได้)
+            if (g.GetComponent<Button>() != null)
+                continue;
+
+            // ปิด raycast ของพื้นหลัง/ข้อความ/รูปตกแต่ง
+            g.raycastTarget = false;
+        }
     }
 
     // ===================== Energy / Lock =====================
