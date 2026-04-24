@@ -1,0 +1,115 @@
+ได้ครับ ✅ ผม “เปลี่ยนระบบ Radio” จากเดิมที่โชว์ชื่อ NPC (อ่านจาก `NPCDataManager`) ให้กลายเป็น **โชว์ข้อความเนื้อเรื่องล้วน ๆ** โดย **ไม่ใช้ NPCDataManager อีกต่อไป** ตามที่คุณต้องการ [\[rsuac-my.s...epoint.com\]](https://rsuac-my.sharepoint.com/personal/6507448_rsu_ac_th/Documents/Microsoft%20Copilot%20Chat%20Files/RadioInteract_ShowNames.cs), [\[rsuac-my.s...epoint.com\]](https://rsuac-my.sharepoint.com/personal/6507448_rsu_ac_th/Documents/Microsoft%20Copilot%20Chat%20Files/RadioNamesUI.cs)
+
+***
+
+## ✅ สิ่งที่เปลี่ยน
+
+### ก่อน (ของเดิม)
+
+*   `RadioInteract_ShowNames` จะดึงชื่อ prefab จาก `NPCDataManager.acceptedNPCs` แล้วส่งให้ UI แสดงเป็น list [\[rsuac-my.s...epoint.com\]](https://rsuac-my.sharepoint.com/personal/6507448_rsu_ac_th/Documents/Microsoft%20Copilot%20Chat%20Files/RadioInteract_ShowNames.cs), [\[rsuac-my.s...epoint.com\]](https://rsuac-my.sharepoint.com/personal/6507448_rsu_ac_th/Documents/Microsoft%20Copilot%20Chat%20Files/RadioNamesUI.cs)
+
+### หลัง (เวอร์ชันใหม่)
+
+*   `RadioInteract_ShowNames` จะไม่แตะ `NPCDataManager` แล้ว
+*   มันจะโชว์ “ข้อความเนื้อเรื่อง” จาก:
+    *   **ScriptableObject `RadioStoryData` (แนะนำ)** หรือ
+    *   ใส่ข้อความตรงใน Inspector (fallback)
+*   UI จะโชว์เป็น **ข้อความธรรมดา** + (optional) หัวข้อ และปิดด้วย **ESC** เหมือนเดิม [\[rsuac-my.s...epoint.com\]](https://rsuac-my.sharepoint.com/personal/6507448_rsu_ac_th/Documents/Microsoft%20Copilot%20Chat%20Files/RadioNamesUI.cs)
+
+***
+
+# 📦 ไฟล์ใหม่/ไฟล์แพตช์ (ดาวน์โหลด)
+
+1.  **RadioStoryData.cs** (ScriptableObject เก็บเนื้อเรื่องหลายหน้า)  
+    [ดาวน์โหลด](blob:https://m365.cloud.microsoft/9d3e5b72-c26c-48ed-a612-7a853a941f14)
+
+2.  **RadioInteract\_ShowNames\_UPDATED\_StoryText.cs** (ตัววิทยุแบบใหม่)  
+    [ดาวน์โหลด](blob:https://m365.cloud.microsoft/9ddfcbd9-f3e3-4c0b-b47a-4635fde17687)
+
+3.  **RadioNamesUI\_UPDATED\_Text.cs** (UI เดิม แต่เพิ่มเมธอด ShowText + ปรับข้อความ)  
+    [ดาวน์โหลด](blob:https://m365.cloud.microsoft/95003b3e-80e8-4f9d-8f56-2072471fafc3)
+
+***
+
+# 🔧 วิธีติดตั้ง (สำคัญ: กันคลาสซ้ำ)
+
+เพราะไฟล์ใหม่ยังใช้ชื่อคลาสเดิม (`RadioInteract_ShowNames`, `RadioNamesUI`) เพื่อให้คุณ “สลับแล้วไม่ต้องลาก reference ใหม่เยอะ” [\[rsuac-my.s...epoint.com\]](https://rsuac-my.sharepoint.com/personal/6507448_rsu_ac_th/Documents/Microsoft%20Copilot%20Chat%20Files/RadioInteract_ShowNames.cs), [\[rsuac-my.s...epoint.com\]](https://rsuac-my.sharepoint.com/personal/6507448_rsu_ac_th/Documents/Microsoft%20Copilot%20Chat%20Files/RadioNamesUI.cs)
+
+ทำตามนี้:
+
+1.  วางไฟล์ใหม่ทั้ง 3 ลง `Assets/Scripts/Radio/`
+2.  **ย้าย/ลบไฟล์เก่าออกจาก Assets**:
+    *   `RadioInteract_ShowNames.cs` เดิม [\[rsuac-my.s...epoint.com\]](https://rsuac-my.sharepoint.com/personal/6507448_rsu_ac_th/Documents/Microsoft%20Copilot%20Chat%20Files/RadioInteract_ShowNames.cs)
+    *   `RadioNamesUI.cs` เดิม [\[rsuac-my.s...epoint.com\]](https://rsuac-my.sharepoint.com/personal/6507448_rsu_ac_th/Documents/Microsoft%20Copilot%20Chat%20Files/RadioNamesUI.cs)
+3.  เปลี่ยนชื่อไฟล์ใหม่ให้ตรงชื่อเดิม (แนะนำเพื่อกันสับสน):
+    *   `RadioInteract_ShowNames_UPDATED_StoryText.cs` → `RadioInteract_ShowNames.cs`
+    *   `RadioNamesUI_UPDATED_Text.cs` → `RadioNamesUI.cs`
+    *   `RadioStoryData.cs` ใช้ชื่อเดิมได้เลย
+
+> ถ้าไม่ลบไฟล์เก่า Unity จะ compile error เพราะ class name ซ้ำ
+
+***
+
+# 🧩 วิธีใช้งานใน Unity (ตั้งค่าใน Inspector)
+
+## 1) ตั้งค่า UI (RadioNamesUI)
+
+ใน Scene ให้มี GameObject ที่ใส่ `RadioNamesUI` แล้วลาก:
+
+*   `rootPanel` = Panel หลักของ UI (เริ่มต้นปิด)  [\[rsuac-my.s...epoint.com\]](https://rsuac-my.sharepoint.com/personal/6507448_rsu_ac_th/Documents/Microsoft%20Copilot%20Chat%20Files/RadioNamesUI.cs)
+*   `textOutput` = TMP ที่ไว้โชว์เนื้อเรื่อง  [\[rsuac-my.s...epoint.com\]](https://rsuac-my.sharepoint.com/personal/6507448_rsu_ac_th/Documents/Microsoft%20Copilot%20Chat%20Files/RadioNamesUI.cs)
+*   (optional) `titleOutput` = TMP หัวข้อ 
+*   (optional) `hintOutput` = TMP คำใบ้ เช่น “ESC: ปิด” 
+*   `closeOnEsc = true` (เหมือนเดิม)  [\[rsuac-my.s...epoint.com\]](https://rsuac-my.sharepoint.com/personal/6507448_rsu_ac_th/Documents/Microsoft%20Copilot%20Chat%20Files/RadioNamesUI.cs)
+
+## 2) ตั้งค่า Radio object (RadioInteract\_ShowNames)
+
+บน GameObject วิทยุ:
+
+*   ต้องมี **Collider** (เดิมก็ require อยู่แล้ว)  [\[rsuac-my.s...epoint.com\]](https://rsuac-my.sharepoint.com/personal/6507448_rsu_ac_th/Documents/Microsoft%20Copilot%20Chat%20Files/RadioInteract_ShowNames.cs)
+*   ตั้ง `requiredLayerName = "interactable"` ให้ตรงกับ InteractionRay  [\[rsuac-my.s...epoint.com\]](https://rsuac-my.sharepoint.com/personal/6507448_rsu_ac_th/Documents/Microsoft%20Copilot%20Chat%20Files/RadioInteract_ShowNames.cs)
+*   ตั้ง UI:
+    *   `namesUI` = ลาก RadioNamesUI ในฉาก (หรือเปิด `autoFindUIInScene=true`) 
+
+### ใส่ “ข้อความเนื้อเรื่อง” ได้ 2 แบบ
+
+#### ✅ แบบ A (แนะนำ): ใช้ ScriptableObject
+
+1.  Create → **Radio → Story Data**
+2.  ใส่:
+    *   `title` (optional)
+    *   `pages[]` (แต่ละหน้าเป็นข้อความยาวได้)
+    *   `randomPage` (สุ่มหน้า) หรือ `cyclePages` (วนหน้า) 
+3.  ลาก asset ไปใส่ที่ `storyData` ของวิทยุ 
+
+#### ✅ แบบ B: ใส่ใน Inspector ตรง ๆ
+
+*   ถ้าไม่ใส่ `storyData` ให้กรอก `inlinePages[]` ใน `RadioInteract_ShowNames` ได้เลย 
+
+***
+
+# 🎮 วิธีเล่น (Behavior)
+
+*   ผู้เล่นกด **E** ที่วิทยุ (ผ่าน `InteractionRay` ที่เรียก `IInteractable.Interact()`) [\[rsuac-my.s...epoint.com\]](https://rsuac-my.sharepoint.com/personal/6507448_rsu_ac_th/Documents/Microsoft%20Copilot%20Chat%20Files/RadioInteract_ShowNames.cs)
+*   ระบบจะแสดง “ข้อความเนื้อเรื่อง” ที่หน้า UI
+*   ผู้เล่นกด **ESC** เพื่อปิด (เหมือนเดิม)  [\[rsuac-my.s...epoint.com\]](https://rsuac-my.sharepoint.com/personal/6507448_rsu_ac_th/Documents/Microsoft%20Copilot%20Chat%20Files/RadioNamesUI.cs)
+*   ถ้าตั้ง `cyclePages=true` กดวิทยุซ้ำจะเปลี่ยนหน้าไปเรื่อย ๆ 
+
+***
+
+# ✅ หมายเหตุสำคัญ (เพื่อไม่ให้สับสน)
+
+*   ถึงชื่อคลาสยังเป็น `RadioInteract_ShowNames` / `RadioNamesUI` แต่มัน “เปลี่ยนบทบาทแล้ว” จากชื่อ NPC → เนื้อเรื่องข้อความล้วน  [\[rsuac-my.s...epoint.com\]](https://rsuac-my.sharepoint.com/personal/6507448_rsu_ac_th/Documents/Microsoft%20Copilot%20Chat%20Files/RadioInteract_ShowNames.cs), [\[rsuac-my.s...epoint.com\]](https://rsuac-my.sharepoint.com/personal/6507448_rsu_ac_th/Documents/Microsoft%20Copilot%20Chat%20Files/RadioNamesUI.cs)
+*   ไม่ใช้ `NPCDataManager` แล้วจริง ๆ (ตัด dependency ออก)  [\[rsuac-my.s...epoint.com\]](https://rsuac-my.sharepoint.com/personal/6507448_rsu_ac_th/Documents/Microsoft%20Copilot%20Chat%20Files/RadioInteract_ShowNames.cs)
+
+***
+
+## ถามเพิ่มนิดเดียวเพื่อปรับ UX ให้ตรงใจ
+
+คุณอยากให้ “Radio เนื้อเรื่อง” เป็นแบบไหนต่อครับ?
+
+1.  กด E แล้วโชว์ “หน้าเดียว” (อ่านยาว ๆ) + ESC ปิด (ตอนนี้ทำแบบนี้) 
+2.  อยากให้ **คลิกซ้าย/Space ไปหน้าถัดไป** เหมือน dialogue NPC
+3.  อยากให้มี “เอฟเฟกต์ typewriter / เสียงวิทยุ” ระหว่างข้อความขึ้น
+
+ตอบ 1/2/3 ได้เลย เดี๋ยวผมปรับสคริปต์ให้ต่อทันที ✅

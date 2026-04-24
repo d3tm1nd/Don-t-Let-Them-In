@@ -1,0 +1,131 @@
+ได้เลยครับ ✅ ผมทำ “ระบบ Dialogue ใหม่” ตามที่คุณต้องการแล้ว:
+
+*   ✅ กด **F** ที่ NPC (ตัวที่อยู่ “ข้างในบ้าน”) → เปิด Dialogue UI
+*   ✅ **คลิกซ้าย** (Mouse0) → ไปประโยคถัดไป
+*   ✅ กด **ESC** → ออกจาก Dialogue UI ทันที
+*   ✅ เป็นระบบแบบ Linear (เรียงประโยค) ก่อน ยังไม่ทำ Radio dialogue ตามที่คุณบอก
+
+***
+
+## 📦 ไฟล์ระบบ Dialogue (ดาวน์โหลด)
+
+1.  [SimpleDialogueData.cs](blob:https://m365.cloud.microsoft/eacd6ca5-0e60-4bec-b336-46528a9ef852) – เก็บบทสนทนาแบบ ScriptableObject
+2.  [NPCDialogueSource.cs](blob:https://m365.cloud.microsoft/683a6b92-54f0-41ef-a1dd-2263ffc25295) – ใส่บน NPC เพื่อกำหนดบทสนทนา
+3.  [SimpleDialogueUI.cs](blob:https://m365.cloud.microsoft/7d671b9b-0d9c-4e37-95f9-5d811d6b0171) – UI แสดงชื่อ + ข้อความ + hint
+4.  [SimpleDialogueManager.cs](blob:https://m365.cloud.microsoft/57a7d9c2-aaf2-42fc-915c-97fac0e9803e) – คุม flow + รับ input คลิกซ้าย/ESC
+5.  [DialogueRaycasterF.cs](blob:https://m365.cloud.microsoft/39819c97-c89d-42eb-9766-ce145f59aeae) – Raycast จากกล้อง แล้วกด F เพื่อเริ่มคุย
+
+> วางไฟล์ทั้งหมดใน `Assets/Scripts/Dialogue/` ได้เลย
+
+***
+
+# ✅ วิธีติดตั้ง (Step-by-step) — ทำตามนี้แล้วใช้ได้ทันที
+
+## 1) สร้าง Dialogue UI บน Canvas
+
+ใน Scene (Day/Night ที่มี NPC อยู่ในบ้าน)
+
+**Canvas**
+
+*   `DialogueRoot` (Panel/Group)
+    *   `SpeakerText` (TextMeshProUGUI) – ชื่อ NPC
+    *   `LineText` (TextMeshProUGUI) – ประโยค
+    *   `HintText` (TextMeshProUGUI) – เช่น “คลิกซ้าย: ต่อไป | ESC: ออก” *(optional)*
+
+จากนั้น:
+
+1.  สร้าง GameObject ชื่อ `DialogueUI`
+2.  ใส่ Component: `SimpleDialogueUI`
+3.  ลาก reference:
+    *   `root` = DialogueRoot
+    *   `speakerText` = SpeakerText
+    *   `lineText` = LineText
+    *   `hintText` = HintText (ถ้ามี)
+4.  ค่า default มันจะ Hide ตอนเริ่มเกมเอง
+
+***
+
+## 2) วาง Dialogue Manager ใน Scene
+
+1.  สร้าง GameObject ชื่อ `DialogueSystem`
+2.  ใส่ Component: `SimpleDialogueManager`
+3.  ตั้งค่าใน Inspector:
+    *   `ui` = ลาก `DialogueUI` (ตัวที่มี SimpleDialogueUI)
+    *   `disableWhileOpen` = (แนะนำ) ลากพวกควบคุม FPS ที่ควรหยุดตอนคุย เช่น `InteractionRay`, `MouseLook`, `PlayerController`
+    *   `blockIfUIActive` = (optional) ลาก UI ใหญ่ที่ไม่อยากให้เปิดบทสนทนาซ้อน เช่น `BodyCheckRoot`
+
+> ระบบนี้ไม่ต้องปล่อยเมาส์ เพราะ “คลิกซ้าย” เป็น input ได้แม้ cursor locked
+
+***
+
+## 3) วาง Raycaster F ที่ Player/Camera
+
+1.  ไปที่ `PlayerCamera` (หรือ GameObject ผู้เล่น)
+2.  ใส่ Component: `DialogueRaycasterF`
+3.  ตั้งค่า:
+    *   `cam` = กล้องผู้เล่น
+    *   `distance` = ระยะพูด (แนะนำ 2.5–3.5)
+    *   `mask` = เลือก layer ที่ NPC collider อยู่ (เพื่อ raycast โดนเร็วขึ้น)
+    *   `talkKey` = `F` (ค่า default)
+
+> ถ้าไม่รู้ layer ให้ใช้ mask = Everything แล้วค่อยลดทีหลัง
+
+***
+
+## 4) เตรียม Dialogue Data (แนะนำ ScriptableObject)
+
+1.  คลิกขวาใน Project → Create → **Dialogue → Simple Dialogue Data**
+2.  ตั้งค่า:
+    *   `speakerName` = “Jone”
+    *   `lines` = ใส่ข้อความหลายบรรทัด (แต่ละบรรทัดคือ 1 ประโยค)
+
+***
+
+## 5) ใส่ Dialogue ให้ NPC “ข้างในบ้าน”
+
+ที่ NPC prefab/instance ในบ้าน:
+
+1.  Add Component: `NPCDialogueSource`
+2.  ตั้งค่าอย่างใดอย่างหนึ่ง:
+    *   วิธี A (แนะนำ): ใส่ `dialogueData` = asset ที่สร้างไว้
+    *   วิธี B: ถ้าไม่ใช้ asset ให้ใส่ `speakerName` + `lines[]` ตรงใน inspector
+
+⚠️ สำคัญ:
+
+*   NPC ต้องมี **Collider** ที่ raycast โดน (เช่น CapsuleCollider/BoxCollider)
+*   ถ้า collider อยู่ที่ child ก็ยังได้ เพราะโค้ดใช้ `GetComponentInParent<NPCDialogueSource>()`
+
+***
+
+# 🎮 วิธีเล่น (ตามที่คุณต้องการ)
+
+*   เล็ง NPC ในบ้าน → กด **F** → Dialogue UI ขึ้น
+*   คลิกซ้าย → ไปประโยคถัดไป
+*   ถึงประโยคสุดท้าย → ระบบปิดเอง (หรือคุณกด ESC ได้)
+*   กด **ESC** เมื่อไหร่ก็ออกทันที
+
+***
+
+# ✅ หมายเหตุสำคัญ (เพื่อให้ “NPC ในบ้านเท่านั้น”)
+
+ระบบนี้ “คุยได้กับอะไรก็ตามที่มี `NPCDialogueSource`”  
+ดังนั้นวิธีควบคุมให้ “เฉพาะ NPC ในบ้าน” คือ:
+
+*   ใส่ `NPCDialogueSource` เฉพาะ prefab/instance “Inside NPC” เท่านั้น
+*   อย่าใส่กับ prefab ที่อยู่หน้าประตู (Door NPC)
+
+***
+
+# 🔜 ต่อไปถ้าคุณอยากให้เหมือน “แผนผัง” ในภาพ (แตกกิ่ง)
+
+ตอนนี้ผมทำเป็น **Linear** ตามที่คุณสั่ง (คลิกซ้ายไปต่อ)  
+ถ้าคุณอยากให้ “มีตัวเลือกตอบ 2–4 ปุ่ม” แบบ branching (เหมือน diagram) บอกผมได้เลย เดี๋ยวผมต่อยอดเป็น DialogueGraph ได้โดยไม่กระทบระบบ F/ESC เดิม
+
+***
+
+ถ้าคุณอยาก ผมช่วย “เชื่อมกับระบบเดิม” ได้อีกนิด:
+
+*   ตอนเปิด dialogue ให้ lock bodycheck/interaction prompt อื่น ๆ
+*   หรือให้ dialogue มีเงื่อนไขตาม day/phase
+
+บอกมาได้เลยครับว่าต้องการแบบไหน ✅

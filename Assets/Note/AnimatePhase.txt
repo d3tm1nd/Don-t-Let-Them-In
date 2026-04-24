@@ -1,0 +1,31 @@
+วิธีใช้แบบที่ 1 (แนะนำสำหรับเริ่มเร็ว): เปลี่ยน “State” ใน Animator
+ใช้ไฟล์: NPCPhaseAnimator.cs 2
+1) เตรียม Animator Controller (ฝั่ง Artist)
+ใน Animator Controller ของ NPC ให้ทำ state ชื่อเช่น:
+
+Idle_Morning
+Idle_Day
+Idle_Night
+
+(ชื่อเป๊ะ ๆ หรือจะเปลี่ยนใน Inspector ก็ได้)
+2) ใส่สคริปต์บน NPC (ตัวในบ้าน)
+
+ใส่ NPCPhaseAnimator บน Inside NPC prefab/instance
+ถ้า Animator อยู่ใน child ก็ได้ (สคริปต์ auto หาให้)
+
+3) ตั้งค่า Inspector
+ใน NPCPhaseAnimator:
+
+morningState = "Idle_Morning"
+dayState = "Idle_Day"
+nightState = "Idle_Night"
+useCrossFade = true (แนะนำ)
+crossFadeTime = 0.15 (ปรับได้)
+layer = 0 (ถ้าใช้ layer แยกก็เปลี่ยนได้)
+
+✅ ผลลัพธ์:
+พอ phase เปลี่ยน สคริปต์จะ CrossFade/Play ไป state ที่กำหนดทันที แบบไม่สุ่ม
+
+ควรใส่สคริปต์นี้ที่ไหน?
+แนะนำ: ใส่บน Inside NPC prefab (คน/ผีที่อยู่ในบ้าน)
+เพราะคุณต้องการให้ “เปลี่ยนท่าตาม phase” ตอนอยู่ในบ้าน

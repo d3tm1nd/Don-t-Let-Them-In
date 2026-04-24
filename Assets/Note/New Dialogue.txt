@@ -1,0 +1,82 @@
+ได้ครับ ✅ คุณมี `InteractionRay.cs` อยู่แล้ว ผมเลย **อัปเดตให้รองรับ Dialogue กด F** โดยไม่ต้องใช้ `DialogueRaycasterF` แยกต่างหาก
+
+## ✅ สิ่งที่เปลี่ยนใน InteractionRay (ตามไฟล์ที่คุณส่ง)
+
+ไฟล์เดิมของคุณทำงานแบบนี้:
+
+*   ยิง Raycast ไปข้างหน้า
+*   **F (กดค้าง)** = peephole (`PeepHoleInteract.StartPeep/StopPeep`)
+*   **E** = `IInteractable.Interact()` [\[rsuac-my.s...epoint.com\]](https://rsuac-my.sharepoint.com/personal/6507448_rsu_ac_th/Documents/Microsoft%20Copilot%20Chat%20Files/InteractionRay.cs)
+
+ผมอัปเดตให้เพิ่ม:
+
+*   **F (กดครั้งเดียว)** ถ้าโดน NPC ที่มี `NPCDialogueSource` → เปิด dialogue ทันทีผ่าน `SimpleDialogueManager`
+*   ถ้า dialogue เปิดอยู่ → บล็อก interaction อื่นทั้งหมด (กันกด E ซ้อน/peephole ซ้อน)
+*   peephole ยังคงอยู่ แต่จะทำงาน “เมื่อไม่เจอ NPCDialogueSource” (คุณลบทิ้งได้ถ้าไม่ใช้แล้ว)
+
+📦 ไฟล์อัปเดต:
+
+*   **InteractionRay\_UPDATED\_withDialogue.cs** 
+
+***
+
+# 🔧 วิธีติดตั้ง (สำคัญ: กันคลาสซ้ำ)
+
+1.  ดาวน์โหลดไฟล์: 
+2.  ใน Unity ไปที่ `Assets/...`
+3.  **ลบ/ย้าย `InteractionRay.cs` ตัวเดิมออกจาก Assets** (เพราะชื่อคลาส `InteractionRay` ซ้ำกันจะ compile error)  [\[rsuac-my.s...epoint.com\]](https://rsuac-my.sharepoint.com/personal/6507448_rsu_ac_th/Documents/Microsoft%20Copilot%20Chat%20Files/InteractionRay.cs)
+4.  เปลี่ยนชื่อไฟล์ใหม่ให้เป็น `InteractionRay.cs` แล้ววางแทน
+
+***
+
+# ✅ ต้องมีอะไรในระบบ Dialogue ถึงจะทำงาน
+
+ระบบนี้ใช้ `NPCDialogueSource` + `SimpleDialogueManager` (ที่เราทำไว้ก่อนหน้า) ดังนั้นต้องมี:
+
+### 1) บน NPC “ข้างในบ้าน”
+
+*   Add component: `NPCDialogueSource`
+*   ใส่ `SimpleDialogueData` หรือใส่ `lines` ตรง inspector
+
+### 2) ใน Scene
+
+*   มี GameObject ที่ใส่ `SimpleDialogueManager` และผูก `SimpleDialogueUI`
+
+> เมื่อกด **F** แล้ว raycast โดน collider ของ NPC → จะเรียก `StartDialogue(src)` ทันที
+
+***
+
+# 🧠 Logic Priority (สำคัญ)
+
+ลำดับที่ InteractionRay ใหม่ทำงาน:
+
+1.  ถ้า dialogue เปิดอยู่ → return ทันที (บล็อกทุกอย่าง) 
+2.  ถ้า raycast โดน:
+    *   ถ้ากด **F ครั้งเดียว** และมี `NPCDialogueSource` → เปิด dialogue และ return 
+    *   ถ้าไม่มี NPCDialogueSource → ไปเช็ค peephole (F ค้าง) 
+    *   จากนั้นค่อยเช็ค **E** เพื่อ interact ปกติ 
+
+***
+
+# 🟩 ถ้าคุณ “ไม่ใช้ peephole แล้ว”
+
+คุณสามารถลบส่วนนี้ออกได้ในไฟล์ใหม่:
+
+*   ตัวแปร `currentPeep`
+*   block “Peep Hole (กดค้าง F)” ทั้งก้อน 
+
+ผมยังคงไว้ให้ก่อน เพราะไฟล์เดิมคุณใช้ F กับ peephole อยู่ [\[rsuac-my.s...epoint.com\]](https://rsuac-my.sharepoint.com/personal/6507448_rsu_ac_th/Documents/Microsoft%20Copilot%20Chat%20Files/InteractionRay.cs)
+
+***
+
+# ✅ เช็คเร็ว (Debug)
+
+ถ้ากด F แล้วไม่ขึ้น dialogue ให้เช็ค 3 อย่างนี้:
+
+1.  NPC มี **Collider** ที่อยู่ใน `interactLayer` ของ InteractionRay หรือไม่  [\[rsuac-my.s...epoint.com\]](https://rsuac-my.sharepoint.com/personal/6507448_rsu_ac_th/Documents/Microsoft%20Copilot%20Chat%20Files/InteractionRay.cs)
+2.  Collider ที่โดน raycast อยู่ใน hierarchy ของ NPC ที่มี `NPCDialogueSource` หรือไม่ (เพราะใช้ `GetComponentInParent`) 
+3.  ใน scene มี `SimpleDialogueManager` อยู่จริง และ `ui` ถูก set หรือหาเจอได้
+
+***
+
+ถ้าคุณอยากให้ “ตอนคุย dialogue” มี **ล็อกกล้อง/หยุดเดินแบบเดียวกับ BodyCheckUI** บอกผมได้เลย เดี๋ยวผมเพิ่ม option ใน `SimpleDialogueManager` ให้สั่ง `MouseLook.canLook=false` (รองรับ script ของคุณ) พร้อมตัวอย่างการลาก reference ใน Inspector ✅

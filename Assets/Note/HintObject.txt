@@ -1,0 +1,119 @@
+ได้เลยครับ ✅ ผมทำ “ระบบ Hint เมื่อผู้เล่นเดินผ่าน object ที่ interact ได้” ให้ตามสเปกครบ:
+
+*   เดินเข้าใกล้/เดินผ่านครั้งแรก → ขึ้นข้อความบอกว่า “ใช้ทำอะไร” **ประมาณ 4 วินาที** แล้วหาย
+*   เดินผ่านรอบที่ 2 ขึ้นไป → **ไม่ขึ้นอีกเลยตลอดไป**
+*   รองรับ “ตลอดไป” ได้ 2 แบบ:
+    *   ✅ **ข้ามรอบเกม** (ใช้ `PlayerPrefs`) *ค่าเริ่มต้นเปิดอยู่*
+    *   หรือจำเฉพาะรอบเล่นนั้น (ปิด persist ได้)
+
+***
+
+## 📦 ไฟล์สคริปต์ (ดาวน์โหลด)
+
+*   UI Controller: [InteractableHintUI.cs](blob:https://m365.cloud.microsoft/854824b2-e782-4621-a2c1-622aab4cccc6)
+*   Seen Registry (จำว่าเคยโชว์แล้ว): [HintSeenRegistry.cs](blob:https://m365.cloud.microsoft/5727a439-46e1-4d01-96e4-8eeb7d50ef42)
+*   Trigger ตรวจว่าผู้เล่นเดินผ่าน: [InteractableHintTrigger.cs](blob:https://m365.cloud.microsoft/4b13ed10-1206-4771-9703-2cf5f09a6610)
+*   Source ข้อความ + ตั้งค่า: [InteractableHintSource.cs](blob:https://m365.cloud.microsoft/1fa7e900-f2e2-4f19-8132-777b0688ad6b)
+
+***
+
+# ✅ วิธีติดตั้ง (Step-by-step แบบไม่งง)
+
+## 1) ทำ UI Hint บนหน้าจอ
+
+1.  ใน Scene สร้าง **Canvas** (Screen Space - Overlay)
+
+2.  สร้าง Panel ชื่อ `HintPanel` (ตั้งให้สวยได้เลย)
+
+3.  ใส่ TextMeshProUGUI ชื่อ `HintText`
+
+4.  สร้าง GameObject ชื่อ `InteractableHintUI`
+
+*   ใส่สคริปต์ `InteractableHintUI`
+*   ลาก reference:
+    *   `root` = `HintPanel`
+    *   `hintText` = `HintText`
+*   ตั้ง `HintPanel` ให้ **ปิดไว้ตอนเริ่ม** (สคริปต์จะ Hide ให้อยู่แล้ว) [InteractableHintUI.cs](blob:https://m365.cloud.microsoft/854824b2-e782-4621-a2c1-622aab4cccc6)
+
+***
+
+## 2) ใส่ Hint ให้ object ที่ interact ได้
+
+บน object ที่คุณใช้ `IInteractable` อยู่ (เช่น เตียง/วิทยุ/ประตู/โต๊ะอาหาร ฯลฯ):
+
+### A) ใส่ข้อความ (Source)
+
+*   Add Component → `InteractableHintSource`
+*   ตั้งค่า:
+    *   `hintText` = ข้อความอธิบายว่า object นี้ทำอะไร
+    *   `showSeconds` = 4 (หรือปรับได้)
+    *   `persistAcrossSessions` = ✅ true (แปลว่า “ตลอดไป” แม้ปิดเกมเปิดใหม่) [InteractableHintSource.cs](blob:https://m365.cloud.microsoft/1fa7e900-f2e2-4f19-8132-777b0688ad6b)
+
+> **สำคัญมาก:** `hintId` ต้อง “ไม่ซ้ำกัน”  
+> ค่า default จะตั้งให้เป็น `SceneName_ObjectName` แต่ถ้ามี object name ซ้ำกันใน scene เดียวกัน แนะนำให้ตั้งเองให้ unique เช่น `Day_Radio_01` [InteractableHintSource.cs](blob:https://m365.cloud.microsoft/1fa7e900-f2e2-4f19-8132-777b0688ad6b)
+
+***
+
+### B) ใส่ Trigger ตรวจเดินผ่าน
+
+*   Add Component → `InteractableHintTrigger`
+*   สคริปต์จะบังคับ collider ให้เป็น trigger และยิงตอน `OnTriggerEnter` [InteractableHintTrigger.cs](blob:https://m365.cloud.microsoft/4b13ed10-1206-4771-9703-2cf5f09a6610)
+
+**ต้องมี Collider ด้วย**
+
+*   ถ้า object มี collider อยู่แล้ว ให้ติ๊ก **Is Trigger**
+*   หรือสร้าง child ชื่อ `HintTrigger` ใส่ `BoxCollider` แล้วติ๊ก isTrigger และใส่ `InteractableHintTrigger` ไว้บน child นั้น (สะดวกที่สุด)
+
+***
+
+## 3) ทำให้ Trigger ทำงานแน่นอน (Unity rule)
+
+สำหรับ `OnTriggerEnter` ให้ทำงาน **ต้องมีอย่างน้อย 1 Rigidbody** ในคู่ที่ชนกัน  
+วิธีง่ายสุด:
+
+*   ใส่ `Rigidbody` ให้ Player
+    *   `isKinematic = true`
+    *   `useGravity = false`
+
+แล้วตรวจว่า Player มี Tag = `"Player"` (default ของ trigger script) [InteractableHintTrigger.cs](blob:https://m365.cloud.microsoft/4b13ed10-1206-4771-9703-2cf5f09a6610)
+
+***
+
+# ✅ Behavior ที่คุณจะได้ (ตามสเปก)
+
+*   ครั้งแรกที่ผู้เล่นเข้า trigger:
+    *   ถ้ายังไม่เคย seen → UI โชว์ `hintText` เป็นเวลา `showSeconds` แล้ว hide เอง [InteractableHintUI.cs](blob:https://m365.cloud.microsoft/854824b2-e782-4621-a2c1-622aab4cccc6)
+    *   แล้ว `HintSeenRegistry` จะ mark ว่า id นี้เคยโชว์แล้ว และบันทึกลง PlayerPrefs ถ้าเปิด persist [HintSeenRegistry.cs](blob:https://m365.cloud.microsoft/5727a439-46e1-4d01-96e4-8eeb7d50ef42)
+*   ครั้งที่ 2+:
+    *   `HasSeen(hintId)` เป็น true → ไม่โชว์อีกเลย [HintSeenRegistry.cs](blob:https://m365.cloud.microsoft/5727a439-46e1-4d01-96e4-8eeb7d50ef42)
+
+***
+
+# 🧪 ปุ่มสำหรับ “รีเซ็ต” (ไว้เทส)
+
+ตอนเทสถ้าอยากล้างสถานะทั้งหมด (ให้ข้อความขึ้นใหม่):
+
+*   เรียก `HintSeenRegistry.ClearAll(true);`  
+    จะลบทั้ง memory + PlayerPrefs [HintSeenRegistry.cs](blob:https://m365.cloud.microsoft/5727a439-46e1-4d01-96e4-8eeb7d50ef42)
+
+ผมทำเพิ่มให้ได้เป็น Hotkey เช่น `F9` กดล้างได้เลย ถ้าคุณต้องการ
+
+***
+
+# ⚠️ จุดที่คนพลาดบ่อย (กันไว้เลย)
+
+1.  **hintId ซ้ำกัน** → object หลายชิ้นจะถือว่า “เคยโชว์แล้ว” พร้อมกัน
+2.  **Player ไม่มี Rigidbody** → trigger ไม่ทำงาน
+3.  **Tag ไม่ตรง** → default script ใช้ `"Player"`
+
+***
+
+## คำถามสุดท้าย (เพื่อให้ตรงใจ 100%)
+
+คุณอยากให้ “ตลอดไป” หมายถึง:
+
+1.  ✅ **ข้ามรอบเกม** (ปิดเกมเปิดใหม่ก็ไม่ขึ้น) — ตอนนี้ทำแบบนี้ไว้แล้ว (`persistAcrossSessions=true`) [InteractableHintSource.cs](blob:https://m365.cloud.microsoft/1fa7e900-f2e2-4f19-8132-777b0688ad6b)  
+    หรือ
+2.  แค่ “ตลอดการเล่นรอบนั้น” (พอเริ่มเกมใหม่ให้ขึ้นได้)
+
+ถ้าคุณตอบข้อ 2 ผมจะปรับ default เป็นไม่ใช้ PlayerPrefs ให้ครับ ✅
