@@ -3,10 +3,17 @@ using UnityEngine.UI;
 using TMPro;
 
 /// <summary>
-/// BodyCheckUI (patched):
-/// - เมื่อเลือก "ยิงทิ้ง" จะลบข้อมูล NPC ออกจาก NPCDataManager.acceptedNPCs ด้วย
-/// - ใช้ npcStableId จาก NPCHealthProfile ในการ match (fallback: prefab.name)
-/// - (optional) สามารถ mark ตายใน DeathRegistry ได้ถ้ามีในโปรเจกต์
+/// BodyCheckUI (TAG-FIRST | Shoot spawns corpse/bodybag | NO fade | FOOT-SNAP)
+///
+/// เพิ่มเติมจากเวอร์ชัน Tag-first:
+/// - แก้ปัญหา "ถุงดำ spawn ผิดที่" โดยคำนวณตำแหน่งจาก "เท้า" ของ NPC (Collider/CharacterController bounds)
+/// - (optional) snap ลงพื้นด้วย raycast เพื่อให้วางบนพื้นพอดี
+///
+/// การเลือกศพ/ถุงดำ:
+/// - Tag = "Ghost" / "Human" (เช็คทั้งตัวเองและ root)
+///
+/// หมายเหตุ:
+/// - ถ้า prefab ถุงดำ pivot ไม่อยู่ที่ก้นถุง อาจต้องปรับ prefab pivot (ทำ Empty parent) หรือปรับ spawnOffset
 /// </summary>
 public class BodyCheckUI : MonoBehaviour
 {
@@ -29,8 +36,10 @@ public class BodyCheckUI : MonoBehaviour
     [Header("Decision Panel")]
     [Tooltip("ปุ่มยิง/เก็บไว้ (สามารถตั้งให้แสดงทันทีหรือรอให้ตรวจครบ)")]
     [SerializeField] private GameObject decisionPanel;
+
     [Tooltip("ถ้า true: ปิด RaycastTarget ของพื้นหลัง decisionPanel เพื่อไม่ให้บังปุ่มตรวจ (Eyes/Hands/Temp) เมื่อ panel ทับกัน")]
     [SerializeField] private bool disableDecisionPanelBackgroundRaycast = true;
+
     [SerializeField] private Button shootButton;
     [SerializeField] private Button keepButton;
 
@@ -39,14 +48,14 @@ public class BodyCheckUI : MonoBehaviour
     [SerializeField] private Image eyeRightImg;
     [SerializeField] private Image handLeftImg;
     [SerializeField] private Image handRightImg;
-    [SerializeField] private Image tempIconImg; // optional
+    [SerializeField] private Image tempIconImg;
 
     [Header("Sprites")]
     [SerializeField] private Sprite eyeNormalSprite;
     [SerializeField] private Sprite eyeAbnormalSprite;
     [SerializeField] private Sprite handNormalSprite;
     [SerializeField] private Sprite handAbnormalSprite;
-    [SerializeField] private Sprite tempIconSprite; // optional
+    [SerializeField] private Sprite tempIconSprite;
 
     [Header("Disable scripts while UI open (ลากใส่)")]
     [Tooltip("ลาก InteractionRay / MouseLook / PlayerController ที่ชอบล็อกเมาส์ไว้")]
@@ -65,7 +74,53 @@ public class BodyCheckUI : MonoBehaviour
     [Tooltip("ถ้าเปิด จะพยายาม MarkDead ลง DeathRegistry ด้วย (ถ้ามีในโปรเจกต์)")]
     public bool markDeadInRegistry = true;
 
+    [Header("Shoot Spawn (No Fade)")]
+    [Tooltip("Prefab ศพ (corpse model)")]
+    [SerializeField] private GameObject corpsePrefab;
+
+    [Tooltip("Prefab ถุงดำ (body bag model)")]
+    [SerializeField] private GameObject bodyBagPrefab;
+
+    [Tooltip("ถ้า true: เลือกศพ/ถุงดำตาม Tag (Ghost/Human) | ถ้า false: ใช้ defaultUseBodyBag อย่างเดียว")]
+    [SerializeField] private bool autoChooseByNpcTag = true;
+
+    [Tooltip("ค่า fallback ถ้า Tag ไม่ตรงหรือไม่เจอ")]
+    [SerializeField] private bool defaultUseBodyBag = true;
+
+    [Tooltip("ผี (Tag=Ghost) ใช้ถุงดำไหม")]
+    [SerializeField] private bool ghostUsesBodyBag = true;
+
+    [Tooltip("คน (Tag=Human) ใช้ถุงดำไหม (ปกติ false = spawn ศพ)")]
+    [SerializeField] private bool humanUsesBodyBag = false;
+
+    [Tooltip("offset ตอน spawn (ใช้ปรับละเอียด เช่นยกขึ้นเล็กน้อย)")]
+    [SerializeField] private Vector3 spawnOffset = Vector3.zero;
+
+    [Tooltip("หมุนเพิ่มตอน spawn (องศา)")]
+    [SerializeField] private Vector3 spawnEulerOffset = Vector3.zero;
+
+    [Tooltip("ถ้า true จะ destroy NPC ตัวเดิมหลัง spawn")]
+    [SerializeField] private bool destroyNpcAfterSpawn = true;
+
+    [Header("Spawn Position Fix")]
+    [Tooltip("ถ้า true จะใช้จุดเท้า (bounds.min.y) ของ NPC เป็นจุด spawn")]
+    [SerializeField] private bool useFeetPosition = true;
+
+    [Tooltip("ถ้า true จะ raycast ลงพื้นเพื่อ snap ให้พอดีกับพื้น")]
+    [SerializeField] private bool snapToGround = true;
+
+    [Tooltip("Layer ที่ถือว่าเป็นพื้นสำหรับ snap (แนะนำ: Default/Terrain) | ถ้าไม่แน่ใจปล่อยเป็น Everything")]
+    [SerializeField] private LayerMask groundMask = ~0;
+
+    [Tooltip("ระยะยิง ray ลงพื้นสูงสุด")]
+    [SerializeField] private float groundSnapMaxDistance = 3f;
+
+    [Tooltip("เผื่อยกขึ้นจากพื้นเล็กน้อยหลัง snap (กันจม)")]
+    [SerializeField] private float groundYOffset = 0.02f;
+
     private NPCHealthProfile _target;
+
+    public bool IsOpen => root != null && root.activeSelf;
 
     void Awake()
     {
@@ -79,11 +134,10 @@ public class BodyCheckUI : MonoBehaviour
         if (handButton != null) handButton.onClick.AddListener(OnCheckHands);
         if (tempButton != null) tempButton.onClick.AddListener(OnCheckTemperature);
         if (closeButton != null) closeButton.onClick.AddListener(Close);
-
         if (shootButton != null) shootButton.onClick.AddListener(OnShootNPC);
         if (keepButton != null) keepButton.onClick.AddListener(OnKeepNPC);
-        ApplyDecisionPanelRaycastSetup();
 
+        ApplyDecisionPanelRaycastSetup();
         SetDecisionVisible(false);
     }
 
@@ -98,8 +152,6 @@ public class BodyCheckUI : MonoBehaviour
         if (EnergyManager.Instance != null)
             EnergyManager.Instance.OnChanged -= OnEnergyChanged;
     }
-
-    public bool IsOpen => root != null && root.activeSelf;
 
     public void Open(NPCHealthProfile target)
     {
@@ -133,7 +185,6 @@ public class BodyCheckUI : MonoBehaviour
     }
 
     // ===================== ตรวจ (ลด Energy 1) =====================
-
     public void OnCheckEyes()
     {
         if (!TrySpendEnergy()) return;
@@ -147,6 +198,7 @@ public class BodyCheckUI : MonoBehaviour
 
         if (eyeLeftImg != null)
             eyeLeftImg.sprite = _target.leftEyeAbnormal ? eyeAbnormalSprite : eyeNormalSprite;
+
         if (eyeRightImg != null)
             eyeRightImg.sprite = _target.rightEyeAbnormal ? eyeAbnormalSprite : eyeNormalSprite;
 
@@ -166,6 +218,7 @@ public class BodyCheckUI : MonoBehaviour
 
         if (handLeftImg != null)
             handLeftImg.sprite = _target.leftHandAbnormal ? handAbnormalSprite : handNormalSprite;
+
         if (handRightImg != null)
             handRightImg.sprite = _target.rightHandAbnormal ? handAbnormalSprite : handNormalSprite;
 
@@ -196,7 +249,6 @@ public class BodyCheckUI : MonoBehaviour
     }
 
     // ===================== Decision (ยิง/ไม่ยิง) =====================
-
     private void RefreshDecisionState()
     {
         if (_target == null)
@@ -204,8 +256,10 @@ public class BodyCheckUI : MonoBehaviour
             SetDecisionVisible(false);
             return;
         }
+
         bool ready = decisionAvailableImmediately || _target.IsFullyChecked;
         SetDecisionVisible(ready);
+
         if (shootButton != null) shootButton.interactable = ready;
         if (keepButton != null) keepButton.interactable = ready;
     }
@@ -219,6 +273,21 @@ public class BodyCheckUI : MonoBehaviour
     private void OnShootNPC()
     {
         if (_target == null) return;
+
+        // กันกดซ้ำ
+        if (shootButton != null) shootButton.interactable = false;
+        if (keepButton != null) keepButton.interactable = false;
+
+        // เก็บตำแหน่ง/หมุนก่อนลบ
+        Vector3 pos = GetSpawnPosition(_target.gameObject) + spawnOffset;
+        Quaternion rot = _target.transform.rotation * Quaternion.Euler(spawnEulerOffset);
+
+        // เลือกว่าจะ spawn อะไร
+        bool useBag = DetermineUseBodyBagByTag(_target.gameObject);
+        GameObject prefab = useBag ? bodyBagPrefab : corpsePrefab;
+        if (prefab != null)
+            Instantiate(prefab, pos, rot);
+
         // 1) ลบข้อมูลจาก NPCDataManager ก่อน (กัน spawn กลับมา)
         RemoveFromNPCDataManager(_target);
 
@@ -226,8 +295,9 @@ public class BodyCheckUI : MonoBehaviour
         if (markDeadInRegistry)
             TryMarkDead(_target);
 
-        // 3) ลบ GameObject ในฉาก
-        Destroy(_target.gameObject);
+        // 3) ลบ GameObject NPC ในฉาก
+        if (destroyNpcAfterSpawn && _target != null)
+            Destroy(_target.gameObject);
 
         Close();
     }
@@ -238,8 +308,75 @@ public class BodyCheckUI : MonoBehaviour
         Close();
     }
 
-    // ===================== Remove from NPCDataManager =====================
+    // ===================== Tag-first selection =====================
+    private bool DetermineUseBodyBagByTag(GameObject npcGO)
+    {
+        if (!autoChooseByNpcTag)
+            return defaultUseBodyBag;
 
+        if (npcGO == null) return defaultUseBodyBag;
+
+        Transform rootT = npcGO.transform != null ? npcGO.transform.root : null;
+
+        // Ghost
+        if (npcGO.CompareTag("Ghost") || (rootT != null && rootT.CompareTag("Ghost")))
+            return ghostUsesBodyBag;
+
+        // Human
+        if (npcGO.CompareTag("Human") || (rootT != null && rootT.CompareTag("Human")))
+            return humanUsesBodyBag;
+
+        return defaultUseBodyBag;
+    }
+
+    // ===================== Spawn position (feet + ground snap) =====================
+    private Vector3 GetSpawnPosition(GameObject npcGO)
+    {
+        if (npcGO == null) return Vector3.zero;
+
+        // default fallback
+        Vector3 p = npcGO.transform.position;
+
+        if (useFeetPosition)
+        {
+            // 1) CharacterController bounds
+            var cc = npcGO.GetComponentInParent<CharacterController>();
+            if (cc != null)
+            {
+                var b = cc.bounds;
+                p = b.center;
+                p.y = b.min.y;
+            }
+            else
+            {
+                // 2) Collider bounds (prefer root collider)
+                var col = npcGO.GetComponentInParent<Collider>();
+                if (col != null)
+                {
+                    var b = col.bounds;
+                    p = b.center;
+                    p.y = b.min.y;
+                }
+            }
+        }
+
+        if (snapToGround)
+        {
+            // ยิง ray จากเหนือจุดเท้าลงไป
+            Vector3 origin = p + Vector3.up * 0.5f;
+            float maxDist = Mathf.Max(0.1f, groundSnapMaxDistance);
+
+            if (Physics.Raycast(origin, Vector3.down, out RaycastHit hit, maxDist, groundMask, QueryTriggerInteraction.Ignore))
+            {
+                p = hit.point;
+                p.y += groundYOffset;
+            }
+        }
+
+        return p;
+    }
+
+    // ===================== Remove from NPCDataManager =====================
     private void RemoveFromNPCDataManager(NPCHealthProfile target)
     {
         if (target == null) return;
@@ -247,10 +384,9 @@ public class BodyCheckUI : MonoBehaviour
         if (NPCDataManager.Instance.acceptedNPCs == null) return;
 
         string victimId = string.IsNullOrEmpty(target.npcStableId) ? target.gameObject.name : target.npcStableId;
-
         var list = NPCDataManager.Instance.acceptedNPCs;
-        int removed = 0;
 
+        int removed = 0;
         for (int i = list.Count - 1; i >= 0; i--)
         {
             var entry = list[i];
@@ -278,7 +414,6 @@ public class BodyCheckUI : MonoBehaviour
         var regType = System.Type.GetType("DeathRegistry");
         if (regType == null) return;
 
-        // DeathRegistry.Instance
         var instProp = regType.GetProperty("Instance");
         object inst = instProp != null ? instProp.GetValue(null) : null;
         if (inst == null) return;
@@ -290,32 +425,27 @@ public class BodyCheckUI : MonoBehaviour
         markMethod.Invoke(inst, new object[] { id });
     }
 
-
     // ===================== Decision Panel Raycast =====================
     private void ApplyDecisionPanelRaycastSetup()
     {
         if (!disableDecisionPanelBackgroundRaycast) return;
         if (decisionPanel == null) return;
 
-        // ปิด raycastTarget ของ Graphic ที่เป็นพื้นหลัง/ตกแต่ง เพื่อให้คลิกทะลุไปยังปุ่มตรวจได้
-        // แต่จะไม่ปิดของปุ่ม (Button) ภายใน panel
         var graphics = decisionPanel.GetComponentsInChildren<Graphic>(true);
         for (int i = 0; i < graphics.Length; i++)
         {
             var g = graphics[i];
             if (g == null) continue;
 
-            // ถ้า object นี้เป็นปุ่ม ให้ปล่อยไว้ (ต้องคลิกได้)
+            // ถ้า object นี้เป็นปุ่ม ให้ปล่อยไว้
             if (g.GetComponent<Button>() != null)
                 continue;
 
-            // ปิด raycast ของพื้นหลัง/ข้อความ/รูปตกแต่ง
             g.raycastTarget = false;
         }
     }
 
     // ===================== Energy / Lock =====================
-
     private bool TrySpendEnergy()
     {
         if (EnergyManager.Instance == null)
@@ -352,14 +482,12 @@ public class BodyCheckUI : MonoBehaviour
     private void RefreshLockState()
     {
         bool canCheck = (EnergyManager.Instance != null && EnergyManager.Instance.Current > 0);
-
         if (eyeButton != null) eyeButton.interactable = canCheck;
         if (handButton != null) handButton.interactable = canCheck;
         if (tempButton != null) tempButton.interactable = canCheck;
     }
 
     // ===================== Cursor + Disable Scripts =====================
-
     private void EnterUIMode(bool uiOpen)
     {
         if (uiOpen && showCursorWhenOpen)
@@ -384,7 +512,6 @@ public class BodyCheckUI : MonoBehaviour
     }
 
     // ===================== Show / Hide groups =====================
-
     private void ShowEyes(bool show)
     {
         if (eyeLeftImg != null) eyeLeftImg.gameObject.SetActive(show);

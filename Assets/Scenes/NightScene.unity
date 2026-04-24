@@ -915,6 +915,22 @@ MonoBehaviour:
   lockModeWhenClosed: 1
   hideCursorWhenClosed: 1
   markDeadInRegistry: 1
+  corpsePrefab: {fileID: 6786847747749218575, guid: 95acba4d9f72cf44cab0da366989dc85, type: 3}
+  bodyBagPrefab: {fileID: 6786847747749218575, guid: 95acba4d9f72cf44cab0da366989dc85, type: 3}
+  autoChooseByNpcTag: 1
+  defaultUseBodyBag: 1
+  ghostUsesBodyBag: 1
+  humanUsesBodyBag: 0
+  spawnOffset: {x: 0, y: 0, z: 0}
+  spawnEulerOffset: {x: 0, y: 0, z: 0}
+  destroyNpcAfterSpawn: 1
+  useFeetPosition: 1
+  snapToGround: 1
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  groundSnapMaxDistance: 3
+  groundYOffset: 0.02
 --- !u!1 &287650172
 GameObject:
   m_ObjectHideFlags: 0
