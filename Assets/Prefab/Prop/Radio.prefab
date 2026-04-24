@@ -9,7 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6915912108143034103}
-  m_Layer: 0
+  - component: {fileID: 116989750360247779}
+  m_Layer: 6
   m_Name: Radio
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24,7 +25,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2900628811240837268}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0.21267444, z: -0, w: 0.97712314}
+  m_LocalRotation: {x: 0, y: -0.2126723, z: 0, w: 0.9771236}
   m_LocalPosition: {x: -15.174944, y: -1.9738867, z: 5.128915}
   m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
   m_ConstrainProportionsScale: 0
@@ -32,8 +33,27 @@ Transform:
   - {fileID: 1554995800093079474}
   - {fileID: 5381231951720844284}
   - {fileID: 6197770808352852437}
+  - {fileID: 6918926028461973066}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: -24.558, z: 0}
+--- !u!114 &116989750360247779
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2900628811240837268}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ec20ed6c75cc1446b5fcf2535a60cad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InteractableHintSource
+  hintId: MorningScene_Radio_Body
+  hintText: "\u0E01\u0E14 E \u0E40\u0E1E\u0E37\u0E48\u0E2D\u0E1F\u0E31\u0E07"
+  showSeconds: 4
+  persistAcrossSessions: 0
+  onlyShowInSpecificPhase: 0
+  requiredPhase: 1
 --- !u!1 &3964834371070365470
 GameObject:
   m_ObjectHideFlags: 0
@@ -45,9 +65,11 @@ GameObject:
   - component: {fileID: 1554995800093079474}
   - component: {fileID: 1947480469763926826}
   - component: {fileID: 8199902972014864866}
-  m_Layer: 0
+  - component: {fileID: 4744272104180284761}
+  - component: {fileID: 5988286568483049469}
+  m_Layer: 6
   m_Name: Radio_Body
-  m_TagString: Untagged
+  m_TagString: Interactable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -123,6 +145,46 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &4744272104180284761
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3964834371070365470}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 34.269226, y: 21.888233, z: 11.818657}
+  m_Center: {x: 0.041493777, y: -6.3872995, z: -0.12085289}
+--- !u!114 &5988286568483049469
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3964834371070365470}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f23b328a03fa6d45b263c51a5d16b88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RadioInteract_ShowNames
+  requiredLayerName: Interactable
+  namesUI: {fileID: 0}
+  autoFindUIInScene: 1
+  storyData: {fileID: 11400000, guid: a9d0c7e5011b9734ea9a03e09ee1edb5, type: 2}
+  inlinePages: []
+  randomPage: 0
+  cyclePages: 1
 --- !u!1 &5458696321850745035
 GameObject:
   m_ObjectHideFlags: 0
@@ -134,7 +196,7 @@ GameObject:
   - component: {fileID: 6197770808352852437}
   - component: {fileID: 4994734348754882420}
   - component: {fileID: 974024412005656718}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Radio_Circle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -212,6 +274,75 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &7372669587056188747
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6918926028461973066}
+  - component: {fileID: 8700973177766493783}
+  - component: {fileID: 2562253717671506523}
+  m_Layer: 6
+  m_Name: HintTrigger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6918926028461973066
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7372669587056188747}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.90620923, y: 0.000000014901159, z: -0, w: 0.4228295}
+  m_LocalPosition: {x: 0.00026226044, y: 50.46211, z: 14.475064}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6915912108143034103}
+  m_LocalEulerAnglesHint: {x: -129.97299, y: 0, z: 0}
+--- !u!65 &8700973177766493783
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7372669587056188747}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 212.54771, y: 185.38988, z: 198.91167}
+  m_Center: {x: 26.503544, y: 92.19428, z: 21.846128}
+--- !u!114 &2562253717671506523
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7372669587056188747}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8a51debac4a43b4785d43f32598e3db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InteractableHintTrigger
+  playerTag: Player
+  hintSource: {fileID: 116989750360247779}
+  onlyOnEnter: 1
 --- !u!1 &8254960357580924085
 GameObject:
   m_ObjectHideFlags: 0
@@ -223,7 +354,7 @@ GameObject:
   - component: {fileID: 5381231951720844284}
   - component: {fileID: 8563916207416531272}
   - component: {fileID: 6954343408337207292}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Radio_Buttom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
