@@ -30,15 +30,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2df89a1ad41a28140a4a92795b662f6c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.81661
+      value: -12.079
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2df89a1ad41a28140a4a92795b662f6c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.03482
+      value: 0.023
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2df89a1ad41a28140a4a92795b662f6c, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.77468
+      value: -0.814
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2df89a1ad41a28140a4a92795b662f6c, type: 3}
       propertyPath: m_LocalRotation.w
@@ -504,6 +504,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2df89a1ad41a28140a4a92795b662f6c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 360791475604215012}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2df89a1ad41a28140a4a92795b662f6c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2385037003613395940}
   m_SourcePrefab: {fileID: 100100000, guid: 2df89a1ad41a28140a4a92795b662f6c, type: 3}
 --- !u!1 &957669206859664320 stripped
 GameObject:
@@ -586,3 +589,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NPCBodyCheckInteract
   healthProfile: {fileID: 6087550125212644378}
   ui: {fileID: 0}
+--- !u!114 &2385037003613395940
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 957669206859664320}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c04d56c165e2fb4b83de272a50dfd3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NPCDialogueSource
+  dialogueData: {fileID: 11400000, guid: a217ac9ba8f65a9419d85c7b299ea494, type: 2}
+  speakerName: Jone
+  lines:
+  - "\u0E44\u0E21\u0E48\u0E04\u0E27\u0E23"
+  - "\u0E21\u0E31\u0E19\u0E0A\u0E49\u0E32"
+  requireCollider: 1
