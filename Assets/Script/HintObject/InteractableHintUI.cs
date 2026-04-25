@@ -33,15 +33,31 @@ public class InteractableHintUI : MonoBehaviour
 
     public void ShowHint(string text, float seconds)
     {
-        if (hintText == null || root == null) return;
+        // ✅ แก้บรรทัดนี้ให้ถูกต้อง (ของเดิมในไฟล์เหมือนพิมพ์ผิดเป็นคนละบรรทัด)
+        if (hintText == null || root == null) return;  // [1](https://rsuac-my.sharepoint.com/personal/6507448_rsu_ac_th/Documents/Microsoft%20Copilot%20Chat%20Files/InteractableHintUI.cs)
 
         hintText.text = text ?? "";
         root.SetActive(true);
 
+        // ถ้ามี routine ค้างอยู่ ให้หยุดก่อน
         if (_routine != null)
+        {
             StopCoroutine(_routine);
+            _routine = null;
+        }
 
-        _routine = StartCoroutine(AutoHide(Mathf.Max(0.1f, seconds)));
+        // ✅ ถ้า seconds <= 0 แปลว่า "โชว์ค้าง" ไม่ต้อง auto-hide
+        if (seconds <= 0f)
+            return;
+
+        // ✅ ถ้ามีเวลาจริง ค่อยเริ่ม auto-hide
+        _routine = StartCoroutine(AutoHide(seconds));
+    }
+
+    // ✅ เพิ่มเมธอดนี้เข้าไป (เพื่อให้ Trigger เรียก HideHint() ได้)
+    public void HideHint()
+    {
+        HideImmediate();  // ใช้ของเดิมที่มีอยู่แล้ว [1](https://rsuac-my.sharepoint.com/personal/6507448_rsu_ac_th/Documents/Microsoft%20Copilot%20Chat%20Files/InteractableHintUI.cs)
     }
 
     public void HideImmediate()

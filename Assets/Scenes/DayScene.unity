@@ -3017,6 +3017,8 @@ MonoBehaviour:
   - {fileID: 4226302323286500380, guid: 4506e20a3e541d74baa88a069180190d, type: 3}
   ghostOutsideDoorPrefabs:
   - {fileID: 3219559610544741984, guid: 4b87217a36cdba8428e6cf8ec0094594, type: 3}
+  - {fileID: 3219559610544741984, guid: 4b87217a36cdba8428e6cf8ec0094594, type: 3}
+  - {fileID: 3219559610544741984, guid: 4b87217a36cdba8428e6cf8ec0094594, type: 3}
   humanInsidePrefabs:
   - {fileID: 957669206859664320, guid: 70202bcf8fde4b7459caa80d53adf0f2, type: 3}
   - {fileID: 4226302323286500380, guid: 51ea77798eba9f74f8c9897a533d4294, type: 3}

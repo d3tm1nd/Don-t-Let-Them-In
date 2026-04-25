@@ -564,8 +564,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17eaa55cea5b43f4d9ab6a8ed8486fdf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorNPC
-  dialogueText: _____
-  insultText: ______
+  dialogueText: "\u0E21\u0E32\u0E41\u0E25\u0E49\u0E27\u0E19\u0E30"
+  insultText: "\u0E44\u0E1B\u0E41\u0E25\u0E49\u0E27\u0E19\u0E30"
   spawner: {fileID: 0}
   insidePrefab: {fileID: 957669206859664320, guid: 70202bcf8fde4b7459caa80d53adf0f2, type: 3}
   doorOpenSound: {fileID: 0}

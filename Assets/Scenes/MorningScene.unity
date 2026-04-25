@@ -17554,7 +17554,8 @@ Transform:
   m_LocalPosition: {x: 5.8021517, y: -0.00000044703484, z: -23.97153}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 4740888427938016604}
   m_Father: {fileID: 8595530689078693079}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &3371953888498283082
@@ -21551,12 +21552,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 765721579122101038}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 87, z: -14.8}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -5.8021502, y: 87, z: 9.171551}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 8595530689078693079}
+  m_Father: {fileID: 3366714195014679253}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4753428960651807346
 Transform:
@@ -24837,7 +24838,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &6140339569316921663
 Transform:
   m_ObjectHideFlags: 0
@@ -32245,7 +32246,6 @@ Transform:
   m_Children:
   - {fileID: 4003679715112791766}
   - {fileID: 3366714195014679253}
-  - {fileID: 4740888427938016604}
   m_Father: {fileID: 3685904538113717670}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!65 &8598767013136428596
@@ -32499,8 +32499,8 @@ MonoBehaviour:
   animator: {fileID: 0}
   useBoolParameter: 1
   animatorParam: Open
-  doorCollider: {fileID: 0}
-  disableColliderWhenOpen: 0
+  doorCollider: {fileID: 8650155260375992094}
+  disableColliderWhenOpen: 1
   audioSource: {fileID: 0}
   openSfx: {fileID: 0}
   closeSfx: {fileID: 0}
