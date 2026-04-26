@@ -8777,7 +8777,8 @@ PrefabInstance:
       propertyPath: spawner
       value: 
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1083032577568187736, guid: ca0a82a66781b4448a875e4d7f3dada8, type: 3}
     m_RemovedGameObjects:
     - {fileID: 4675849446311219539, guid: ca0a82a66781b4448a875e4d7f3dada8, type: 3}
     - {fileID: 354308256343477029, guid: ca0a82a66781b4448a875e4d7f3dada8, type: 3}
