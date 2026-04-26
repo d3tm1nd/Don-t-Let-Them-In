@@ -3445,6 +3445,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 580c2b0dcb0149640866c1dfd7a4e68a, type: 3}
       insertIndex: -1
       addedObject: {fileID: -8427422263731774331}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 580c2b0dcb0149640866c1dfd7a4e68a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -44572613427474701}
   m_SourcePrefab: {fileID: 100100000, guid: 580c2b0dcb0149640866c1dfd7a4e68a, type: 3}
 --- !u!1 &1860619793351109240 stripped
 GameObject:
@@ -3513,6 +3516,17 @@ MonoBehaviour:
   minTemperature: 39
   maxTemperature: 42
   temperatureDecimalPlaces: 1
+  useFixedResults: 0
+  fixedEyes: 0
+  fixedHands: 0
+  useFixedTemperature: 0
+  fixedTemperature: 37
+  currentTemperature: 0
+  eyeAbnormal: 0
+  handAbnormal: 0
+  checkedEyes: 0
+  checkedHands: 0
+  checkedTemp: 0
 --- !u!114 &515927335169421355
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3579,3 +3593,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NPCTypeTag
   kind: 1
+--- !u!114 &-44572613427474701
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1860619793351109240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 201491de2c968bf4eb147541860c97c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NPCBodyCheckUISpriteSet
+  eyeNormal: {fileID: 0}
+  eyeAbnormal: {fileID: 0}
+  handNormal: {fileID: 0}
+  handAbnormal: {fileID: 0}
+  tempIcon: {fileID: 0}
