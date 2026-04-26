@@ -9,25 +9,11 @@ using System.Collections.Generic;
 /// - Keep OUTSIDE door prefab and INSIDE prefab matched as a pair (fixes identity mismatch).
 /// - Allow Day 2 to use a NEW set of NPCs (humans/ghosts) by starting from an offset index.
 ///
-/// How to set up arrays (recommended):
-/// - Put Day1 pairs first, then Day2 pairs.
-///   Human:
-///     humanOutsideDoorPrefabs: [0]=JoneDoor, [1]=PennyDoor, [2]=MarkDoor, [3]=LizaDoor
-///     humanInsidePrefabs:      [0]=JoneInside,[1]=PennyInside,[2]=MarkInside,[3]=LizaInside
-///   Ghost (optional):
-///     ghostOutsideDoorPrefabs: [0]=G1Door,[1]=G2Door,[2]=G3Door
-///     ghostInsidePrefabs:      [0]=G1Inside,[1]=G2Inside,[2]=G3Inside
-///
-/// Then set offsets:
-/// - humanStartIndexDay1 = 0
-/// - humanStartIndexDay2 = 2   (so Day2 uses Mark/Liza instead of Jone/Penny)
-/// - ghostStartIndexDay1 = 0
-/// - ghostStartIndexDay2 = 2   (so Day2 uses G3 instead of G1/G2)
-///
-/// Notes:
-/// - Arrays are paired by index (outside[i] matches inside[i]).
-/// - If count exceeds available unique pairs, it wraps with modulo.
-/// - Door prefabs MUST have DoorNPC component.
+/// ✅ Patch (ตามที่ขอ):
+/// - ป้องกันการ Spawn "ซ้อนทับตำแหน่ง" สำหรับ INSIDE spawn points เท่านั้น
+///   โดยจะตรวจว่าจุด spawn ว่างไหมก่อน Instantiate
+///   ถ้าจุดนั้นไม่ว่าง จะลองจุดถัดไปจนกว่าจะเจอจุดว่าง (ภายในจำนวน spawn points)
+///   ถ้าทุกจุดไม่ว่าง จะ "ไม่ spawn" เพื่อกันทับกัน
 /// </summary>
 public class NPCSpawner : MonoBehaviour
 {
@@ -51,7 +37,6 @@ public class NPCSpawner : MonoBehaviour
     public int humanStartIndexDay1 = 0;
     [Tooltip("Start index into HUMAN pairs for Day 2")]
     public int humanStartIndexDay2 = 0;
-
     [Tooltip("Start index into GHOST pairs for Day 1")]
     public int ghostStartIndexDay1 = 0;
     [Tooltip("Start index into GHOST pairs for Day 2")]
@@ -68,10 +53,19 @@ public class NPCSpawner : MonoBehaviour
 
     [Header("Audio")]
     public AudioClip knockSound;
-
     private AudioSource audioSource;
 
-    private Queue<VisitorPlan> todayQueue = new Queue<VisitorPlan>();
+    [Header("Anti-Overlap (INSIDE only)")]
+    [Tooltip("ถ้าเปิด: จะพยายามหาจุด spawn ด้านในที่ว่าง เพื่อกันการ spawn ซ้อนทับ")]
+    public bool preventInsideOverlap = true;
+
+    [Tooltip("รัศมีตรวจว่ามี NPC/ตัวละครอยู่ใกล้จุด spawn หรือไม่ (เมตร)")]
+    public float insideOverlapRadius = 0.6f;
+
+    [Tooltip("ถ้าเปิด: จะข้ามการ spawn ถ้าหาจุดว่างไม่เจอ (กันซ้อนทับ 100%)")]
+    public bool skipSpawnIfNoFreePoint = true;
+
+    private readonly Queue<VisitorPlan> todayQueue = new Queue<VisitorPlan>();
     private int todayTotal = 0;
     private int dayStamp = -1;
 
@@ -104,6 +98,9 @@ public class NPCSpawner : MonoBehaviour
         spawnedOutsideCount = 0;
         acceptedCount = 0;
         spawningOutside = false;
+
+        // หมายเหตุ: รีเซ็ต index ต่อวันยังคงอยู่ (ตามของเดิม)
+        // แต่เรามีกันซ้อนทับแล้ว: ถ้าจุด 0-2 มีคนอยู่ จะไปลองจุดถัดไปให้เอง
         insidePointIndex = 0;
     }
 
@@ -143,7 +140,7 @@ public class NPCSpawner : MonoBehaviour
 
         todayTotal = plans.Count;
 
-        Debug.Log($"📅 NPCSpawner plan (PAIRED+OFFSET) | Day {dayStamp} | total={todayTotal} (H={humans}, G={ghosts}) | humanStart={humanStart} ghostStart={ghostStart}");
+        Debug.Log($"📅 NPCSpawner plan (PAIRED+OFFSET) Day {dayStamp} total={todayTotal} (H={humans}, G={ghosts}) humanStart={humanStart} ghostStart={ghostStart}");
     }
 
     void AddPairedPlansWithOffset(List<VisitorPlan> plans, NPCKind kind, int count, GameObject[] outsideArr, GameObject[] insideArr, int startIndex)
@@ -248,6 +245,7 @@ public class NPCSpawner : MonoBehaviour
 
         GameObject npcDoor = Instantiate(plan.outsideDoorPrefab, outsideSpawnPoint.position, outsideSpawnPoint.rotation);
         var doorNPC = npcDoor.GetComponent<DoorNPC>();
+
         if (doorNPC == null)
         {
             Debug.LogError($"❌ NPCSpawner: Outside prefab '{plan.outsideDoorPrefab.name}' has NO DoorNPC component. Destroying spawned object.");
@@ -259,12 +257,14 @@ public class NPCSpawner : MonoBehaviour
         doorNPC.insidePrefab = plan.insidePrefab;
 
         spawnedOutsideCount++;
+
         if (knockSound != null) audioSource.PlayOneShot(knockSound);
 
-        Debug.Log($"🚪 Spawned OUTSIDE ({plan.kind}) {spawnedOutsideCount}/{todayTotal} | Door='{plan.outsideDoorPrefab.name}' | Inside='{plan.insidePrefab.name}'");
+        Debug.Log($"🚪 Spawned OUTSIDE ({plan.kind}) {spawnedOutsideCount}/{todayTotal} Door='{plan.outsideDoorPrefab.name}' Inside='{plan.insidePrefab.name}'");
     }
 
     // ================= Spawn Inside (records data) =================
+
     public IEnumerator SpawnInsideNPC(GameObject prefabOverride = null)
     {
         if (insideSpawnDelay > 0f)
@@ -277,27 +277,89 @@ public class NPCSpawner : MonoBehaviour
             yield break;
         }
 
-        Transform point = null;
-        if (insideSpawnPoints != null && insideSpawnPoints.Length > 0)
+        Transform point = GetNextInsidePointRespectingOverlap();
+        if (point == null)
         {
-            int idx = insidePointIndex % insideSpawnPoints.Length;
-            point = insideSpawnPoints[idx];
-            insidePointIndex++;
+            if (skipSpawnIfNoFreePoint)
+            {
+                Debug.LogWarning("⚠️ SpawnInsideNPC: No free inside spawn point (skip to prevent overlap).");
+                yield break;
+            }
+            // fallback: spawn at spawner position
+            point = transform;
         }
 
-        Vector3 pos = point != null ? point.position : transform.position;
-        Quaternion rot = point != null ? point.rotation : Quaternion.identity;
+        Vector3 pos = point.position;
+        Quaternion rot = point.rotation;
 
         GameObject insideNPC = Instantiate(prefab, pos, rot);
         RecordNPCData(prefab, insideNPC.transform.position, insideNPC.transform.rotation);
 
-        Debug.Log($"🏠 Spawned INSIDE '{prefab.name}'");
+        Debug.Log($"🏠 Spawned INSIDE '{prefab.name}' at '{point.name}'");
+    }
+
+    private Transform GetNextInsidePointRespectingOverlap()
+    {
+        if (insideSpawnPoints == null || insideSpawnPoints.Length == 0)
+            return null;
+
+        // ถ้าไม่กัน overlap ก็ใช้แบบเดิม
+        if (!preventInsideOverlap)
+        {
+            int idx = insidePointIndex % insideSpawnPoints.Length;
+            insidePointIndex++;
+            return insideSpawnPoints[idx];
+        }
+
+        int attempts = insideSpawnPoints.Length;
+
+        for (int i = 0; i < attempts; i++)
+        {
+            int idx = insidePointIndex % insideSpawnPoints.Length;
+            insidePointIndex++;
+
+            Transform p = insideSpawnPoints[idx];
+            if (p == null) continue;
+
+            if (!IsInsidePointBlockedByNPC(p.position, insideOverlapRadius))
+                return p;
+        }
+
+        // ไม่มีจุดว่าง
+        return null;
+    }
+
+    private bool IsInsidePointBlockedByNPC(Vector3 position, float radius)
+    {
+        // ใช้ OverlapSphere แล้ว "กรอง" เฉพาะ collider ที่เป็น NPC จริง ๆ
+        // (กันปัญหาไปชนพื้น/ผนังแล้วเข้าใจว่าจุดไม่ว่าง)
+        Collider[] hits = Physics.OverlapSphere(position, Mathf.Max(0.01f, radius), ~0, QueryTriggerInteraction.Ignore);
+        if (hits == null || hits.Length == 0) return false;
+
+        for (int i = 0; i < hits.Length; i++)
+        {
+            var c = hits[i];
+            if (c == null) continue;
+
+            // กรองเฉพาะสิ่งที่ดูเป็น NPC ในโปรเจกต์นี้
+            // - NPCHealthProfile (NPC ในบ้าน)
+            // - DoorNPC (เผื่อบาง prefab มี)
+            // - Tag Human/Ghost (สำรอง)
+            if (c.GetComponentInParent<NPCHealthProfile>() != null) return true;
+            if (c.GetComponentInParent<DoorNPC>() != null) return true;
+
+            if (c.CompareTag("Human") || c.CompareTag("Ghost")) return true;
+            Transform root = c.transform.root;
+            if (root != null && (root.CompareTag("Human") || root.CompareTag("Ghost"))) return true;
+        }
+
+        return false;
     }
 
     public void OnNPCAccepted()
     {
         acceptedCount++;
-        Debug.Log($"✅ AcceptedCount={acceptedCount} | SpawnedOutside={spawnedOutsideCount}/{todayTotal}");
+        Debug.Log($"✅ AcceptedCount={acceptedCount} SpawnedOutside={spawnedOutsideCount}/{todayTotal}");
     }
 
     private void RecordNPCData(GameObject prefab, Vector3 position, Quaternion rotation)
