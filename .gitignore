@@ -97,3 +97,10 @@ InitTestScene*.unity*
 
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
+Assets/Prefab/NPC/NPC/Prefab/AlexInside.prefab
+Assets/Prefab/NPC/NPC/Prefab/AlexFrontDoor.prefab
+Assets/Prefab/NPC/NPC/Alex/Alex/PerfabAlexModel.fbx.meta
+Assets/Prefab/NPC/NPC/Alex/Alex/AlexSitting.fbx.meta
+Assets/Prefab/NPC/NPC/Alex/Alex/AlexIdle2.fbx.meta
+Assets/Prefab/NPC/NPC/Alex/Alex/AlexIdle.fbx.meta
+Assets/Prefab/NPC/NPC/Alex/Alex/AlexFrontDoor.fbx.meta
