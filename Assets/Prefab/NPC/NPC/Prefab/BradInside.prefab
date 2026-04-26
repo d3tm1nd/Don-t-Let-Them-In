@@ -3018,6 +3018,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e3094d5742377814683d1c85690f1f65, type: 3}
       insertIndex: -1
       addedObject: {fileID: -8812357768757934455}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e3094d5742377814683d1c85690f1f65, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -399488550271432154}
   m_SourcePrefab: {fileID: 100100000, guid: e3094d5742377814683d1c85690f1f65, type: 3}
 --- !u!1 &3218296337391296457 stripped
 GameObject:
@@ -3139,3 +3142,16 @@ MonoBehaviour:
   crossFadeTime: 0.15
   layer: 0
   replaySameStateOnPhaseChange: 0
+--- !u!114 &-399488550271432154
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3218296337391296457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9ded6bdc825a5844b18053fad3c4df7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NPCTypeTag
+  kind: 0
