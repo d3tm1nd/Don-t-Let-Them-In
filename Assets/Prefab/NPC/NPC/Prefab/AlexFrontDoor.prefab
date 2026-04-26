@@ -3503,5 +3503,5 @@ MonoBehaviour:
     \u0E40\u0E2B\u0E49\u0E2D...\u0E21\u0E31\u0E19\u0E04\u0E07\u0E40\u0E1B\u0E47\u0E19\u0E08\u0E38\u0E14\u0E08\u0E1A\u0E02\u0E2D\u0E07\u0E09\u0E31\u0E19\u0E2A\u0E34\u0E19\u0E30"
   spawner: {fileID: 0}
   insidePrefab: {fileID: 243771885601999525, guid: 0ed41cd903108a64685176d1bbfbf0f6, type: 3}
-  doorOpenSound: {fileID: 0}
+  doorOpenSound: {fileID: 8300000, guid: cb9d449e2f0cef343b17a932d31402a3, type: 3}
   trackDecisionFor2DayRules: 1

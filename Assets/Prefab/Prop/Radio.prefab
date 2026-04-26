@@ -67,6 +67,7 @@ GameObject:
   - component: {fileID: 8199902972014864866}
   - component: {fileID: 4744272104180284761}
   - component: {fileID: 5988286568483049469}
+  - component: {fileID: 1436613190878785304}
   m_Layer: 6
   m_Name: Radio_Body
   m_TagString: Interactable
@@ -185,6 +186,107 @@ MonoBehaviour:
   inlinePages: []
   randomPage: 0
   cyclePages: 1
+  radioSource: {fileID: 1436613190878785304}
+  radioSfx: {fileID: 8300000, guid: e85c1f32896f3b840a6c3106ee129ac1, type: 3}
+  radioVolume: 0.9
+  spatialBlend: 1
+--- !u!82 &1436613190878785304
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3964834371070365470}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &5458696321850745035
 GameObject:
   m_ObjectHideFlags: 0
@@ -326,8 +428,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 212.54771, y: 185.38988, z: 198.91167}
-  m_Center: {x: 26.503544, y: 92.19428, z: 21.846128}
+  m_Size: {x: 108.65538, y: 62.484512, z: 51.986816}
+  m_Center: {x: 1.7399653, y: 125.958855, z: -5.5216994}
 --- !u!114 &2562253717671506523
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -342,7 +444,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InteractableHintTrigger
   playerTag: Player
   hintSource: {fileID: 116989750360247779}
-  onlyOnEnter: 1
 --- !u!1 &8254960357580924085
 GameObject:
   m_ObjectHideFlags: 0

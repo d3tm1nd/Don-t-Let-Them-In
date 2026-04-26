@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.InputSystem;
+using System;
 
 /// <summary>
 /// RadioNamesUI (UPDATED to generic text UI)
@@ -8,25 +9,30 @@ using UnityEngine.InputSystem;
 /// - ตอนนี้ปรับให้โชว์ "ข้อความธรรมดา" ได้ (เนื้อเรื่อง/ประกาศ)
 /// - ปิดด้วย ESC (เหมือนเดิม)
 ///
-/// วิธีใช้:
-/// - เรียก ShowText(title, body) จาก RadioInteract_ShowNames (เวอร์ชันใหม่)
+/// ✅ เพิ่มใหม่:
+/// - event OnClosed ยิงทุกครั้งที่ UI ปิด (เพื่อให้ Radio หยุดเสียงได้ทันที)
 /// </summary>
 public class RadioNamesUI : MonoBehaviour
 {
     [Header("UI")]
-    public GameObject rootPanel; // inactive at start
-    public TextMeshProUGUI textOutput; // TMP text to show body
+    public GameObject rootPanel;          // inactive at start
+    public TextMeshProUGUI textOutput;    // TMP text to show body
 
     [Header("Optional Title")]
-    public TextMeshProUGUI titleOutput; // optional
+    public TextMeshProUGUI titleOutput;   // optional
 
     [Header("Hint (optional)")]
-    public TextMeshProUGUI hintOutput; // optional
+    public TextMeshProUGUI hintOutput;    // optional
     [TextArea(1, 3)]
     public string hint = "ESC: ปิด";
 
     [Header("Close Behavior")]
-    public bool closeOnEsc = true; // Esc to close only
+    public bool closeOnEsc = true;        // Esc to close only
+
+    /// <summary>
+    /// ✅ แจ้งเตือนเมื่อ UI ถูกปิด
+    /// </summary>
+    public event Action OnClosed;
 
     private bool isOpen = false;
 
@@ -71,21 +77,38 @@ public class RadioNamesUI : MonoBehaviour
             ShowText("", "(ไม่มีข้อความ)");
             return;
         }
+
         ShowText("", string.Join("\n", names));
     }
 
     void Update()
     {
         if (!isOpen) return;
+
         if (closeOnEsc && Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
         {
-            Toggle(false);
+            Close();
         }
+    }
+
+    /// <summary>
+    /// ปิด UI จากภายนอก (เช่นปุ่ม Close)
+    /// </summary>
+    public void Close()
+    {
+        Toggle(false);
     }
 
     private void Toggle(bool show)
     {
+        bool wasOpen = isOpen;
         isOpen = show;
-        if (rootPanel != null) rootPanel.SetActive(show);
+
+        if (rootPanel != null)
+            rootPanel.SetActive(show);
+
+        // ✅ ถ้าเพิ่งปิด ให้ยิง event
+        if (wasOpen && !show)
+            OnClosed?.Invoke();
     }
 }

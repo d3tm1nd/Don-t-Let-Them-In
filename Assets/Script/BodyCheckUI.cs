@@ -3,7 +3,10 @@ using UnityEngine.UI;
 using TMPro;
 
 /// <summary>
-/// BodyCheckUI (TAG-FIRST | Shoot spawns corpse/bodybag | NO fade | FOOT-SNAP)
+/// BodyCheckUI (TAG-FIRST)
+/// - Shoot spawns corpse/bodybag
+/// - NO fade
+/// - FOOT-SNAP
 ///
 /// เพิ่มเติมจากเวอร์ชัน Tag-first:
 /// - แก้ปัญหา "ถุงดำ spawn ผิดที่" โดยคำนวณตำแหน่งจาก "เท้า" ของ NPC (Collider/CharacterController bounds)
@@ -12,8 +15,9 @@ using TMPro;
 /// การเลือกศพ/ถุงดำ:
 /// - Tag = "Ghost" / "Human" (เช็คทั้งตัวเองและ root)
 ///
-/// หมายเหตุ:
-/// - ถ้า prefab ถุงดำ pivot ไม่อยู่ที่ก้นถุง อาจต้องปรับ prefab pivot (ทำ Empty parent) หรือปรับ spawnOffset
+/// ✅ เพิ่มใหม่ (ตามที่ขอ):
+/// - เล่นเสียงยิง (2D) ทันทีเมื่อกดปุ่ม Shoot/Interact
+///   และไม่ผูกกับเสียง 3D ในฉาก
 /// </summary>
 public class BodyCheckUI : MonoBehaviour
 {
@@ -81,7 +85,7 @@ public class BodyCheckUI : MonoBehaviour
     [Tooltip("Prefab ถุงดำ (body bag model)")]
     [SerializeField] private GameObject bodyBagPrefab;
 
-    [Tooltip("ถ้า true: เลือกศพ/ถุงดำตาม Tag (Ghost/Human) | ถ้า false: ใช้ defaultUseBodyBag อย่างเดียว")]
+    [Tooltip("ถ้า true: เลือกศพ/ถุงดำตาม Tag (Ghost/Human)\nถ้า false: ใช้ defaultUseBodyBag อย่างเดียว")]
     [SerializeField] private bool autoChooseByNpcTag = true;
 
     [Tooltip("ค่า fallback ถ้า Tag ไม่ตรงหรือไม่เจอ")]
@@ -109,7 +113,7 @@ public class BodyCheckUI : MonoBehaviour
     [Tooltip("ถ้า true จะ raycast ลงพื้นเพื่อ snap ให้พอดีกับพื้น")]
     [SerializeField] private bool snapToGround = true;
 
-    [Tooltip("Layer ที่ถือว่าเป็นพื้นสำหรับ snap (แนะนำ: Default/Terrain) | ถ้าไม่แน่ใจปล่อยเป็น Everything")]
+    [Tooltip("Layer ที่ถือว่าเป็นพื้นสำหรับ snap (แนะนำ: Default/Terrain)\nถ้าไม่แน่ใจปล่อยเป็น Everything")]
     [SerializeField] private LayerMask groundMask = ~0;
 
     [Tooltip("ระยะยิง ray ลงพื้นสูงสุด")]
@@ -118,11 +122,21 @@ public class BodyCheckUI : MonoBehaviour
     [Tooltip("เผื่อยกขึ้นจากพื้นเล็กน้อยหลัง snap (กันจม)")]
     [SerializeField] private float groundYOffset = 0.02f;
 
+    [Header("SFX (2D)")]
+    [Tooltip("AudioSource สำหรับเล่นเสียง UI/เสียงผู้เล่น (2D). ถ้าไม่ใส่ ระบบจะ Add ให้อัตโนมัติ")]
+    [SerializeField] private AudioSource sfxSource;
+
+    [Tooltip("เสียงยิงตอนกด Shoot")]
+    [SerializeField] private AudioClip shootSfx;
+
+    [Range(0f, 1f)]
+    [SerializeField] private float shootVolume = 1f;
+
     private NPCHealthProfile _target;
 
     public bool IsOpen => root != null && root.activeSelf;
 
-    void Awake()
+    private void Awake()
     {
         if (Instance == null) Instance = this;
         else { Destroy(gameObject); return; }
@@ -139,15 +153,26 @@ public class BodyCheckUI : MonoBehaviour
 
         ApplyDecisionPanelRaycastSetup();
         SetDecisionVisible(false);
+
+        // ✅ Setup SFX source (2D)
+        if (sfxSource == null)
+        {
+            sfxSource = GetComponent<AudioSource>();
+            if (sfxSource == null)
+                sfxSource = gameObject.AddComponent<AudioSource>();
+        }
+        sfxSource.playOnAwake = false;
+        sfxSource.loop = false;
+        sfxSource.spatialBlend = 0f; // 2D
     }
 
-    void OnEnable()
+    private void OnEnable()
     {
         if (EnergyManager.Instance != null)
             EnergyManager.Instance.OnChanged += OnEnergyChanged;
     }
 
-    void OnDisable()
+    private void OnDisable()
     {
         if (EnergyManager.Instance != null)
             EnergyManager.Instance.OnChanged -= OnEnergyChanged;
@@ -198,7 +223,6 @@ public class BodyCheckUI : MonoBehaviour
 
         if (eyeLeftImg != null)
             eyeLeftImg.sprite = _target.leftEyeAbnormal ? eyeAbnormalSprite : eyeNormalSprite;
-
         if (eyeRightImg != null)
             eyeRightImg.sprite = _target.rightEyeAbnormal ? eyeAbnormalSprite : eyeNormalSprite;
 
@@ -218,7 +242,6 @@ public class BodyCheckUI : MonoBehaviour
 
         if (handLeftImg != null)
             handLeftImg.sprite = _target.leftHandAbnormal ? handAbnormalSprite : handNormalSprite;
-
         if (handRightImg != null)
             handRightImg.sprite = _target.rightHandAbnormal ? handAbnormalSprite : handNormalSprite;
 
@@ -258,8 +281,8 @@ public class BodyCheckUI : MonoBehaviour
         }
 
         bool ready = decisionAvailableImmediately || _target.IsFullyChecked;
-        SetDecisionVisible(ready);
 
+        SetDecisionVisible(ready);
         if (shootButton != null) shootButton.interactable = ready;
         if (keepButton != null) keepButton.interactable = ready;
     }
@@ -273,6 +296,10 @@ public class BodyCheckUI : MonoBehaviour
     private void OnShootNPC()
     {
         if (_target == null) return;
+
+        // ✅ เล่นเสียงยิง (2D) ทันทีตอนกด
+        if (shootSfx != null && sfxSource != null)
+            sfxSource.PlayOneShot(shootSfx, shootVolume);
 
         // กันกดซ้ำ
         if (shootButton != null) shootButton.interactable = false;
