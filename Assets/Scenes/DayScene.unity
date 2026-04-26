@@ -930,6 +930,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1224146496}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &267220624 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 2231913309333825977, guid: c7ec6d2d48286d54682be4dc049fbabb, type: 3}
+  m_PrefabInstance: {fileID: 7560664057031644520}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &268124233
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3073,6 +3078,9 @@ MonoBehaviour:
   insideSpawnDelay: 0.5
   newOutsideDelay: 2.5
   knockSound: {fileID: 0}
+  preventInsideOverlap: 1
+  insideOverlapRadius: 0.6
+  skipSpawnIfNoFreePoint: 1
   spawnedOutsideCount: 0
   acceptedCount: 0
 --- !u!1 &705875387
@@ -8320,6 +8328,30 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 2231913309333825977, guid: c7ec6d2d48286d54682be4dc049fbabb, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: 78da9b09790a17345bfd9700839578a6, type: 3}
+    - target: {fileID: 2231913309333825977, guid: c7ec6d2d48286d54682be4dc049fbabb, type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4980979197311777886, guid: c7ec6d2d48286d54682be4dc049fbabb, type: 3}
+      propertyPath: stepRate
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4980979197311777886, guid: c7ec6d2d48286d54682be4dc049fbabb, type: 3}
+      propertyPath: footstepSource
+      value: 
+      objectReference: {fileID: 267220624}
+    - target: {fileID: 4980979197311777886, guid: c7ec6d2d48286d54682be4dc049fbabb, type: 3}
+      propertyPath: footstepClips.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4980979197311777886, guid: c7ec6d2d48286d54682be4dc049fbabb, type: 3}
+      propertyPath: 'footstepClips.Array.data[0]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 78da9b09790a17345bfd9700839578a6, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
