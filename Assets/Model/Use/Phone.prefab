@@ -182,7 +182,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NightPhoneOrderInteract
   orderAmountPerPress: 3
   requiredLayerName: Interactable
-  orderSfx: {fileID: 0}
+  orderSfx: {fileID: 8300000, guid: 75f8749eb9a5c11408189ac2caa5fb65, type: 3}
   failSfx: {fileID: 0}
 --- !u!114 &7032424810044676778
 MonoBehaviour:
