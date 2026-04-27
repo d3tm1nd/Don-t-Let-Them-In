@@ -750,22 +750,15 @@ MonoBehaviour:
   disableDecisionPanelBackgroundRaycast: 1
   shootButton: {fileID: 1212807062}
   keepButton: {fileID: 731618266}
-  eyeLeftImg: {fileID: 139835442}
-  eyeRightImg: {fileID: 639268850}
-  handLeftImg: {fileID: 1871594498}
-  handRightImg: {fileID: 1753017294}
+  eyeImg: {fileID: 0}
+  handImg: {fileID: 0}
   tempIconImg: {fileID: 234123963}
-  eyeNormalSprite: {fileID: 0}
-  eyeAbnormalSprite: {fileID: 0}
-  handNormalSprite: {fileID: 0}
-  handAbnormalSprite: {fileID: 0}
-  tempIconSprite: {fileID: 0}
+  warnIfMissingNpcSpriteSet: 1
   disableWhileOpen: []
   decisionAvailableImmediately: 1
   showCursorWhenOpen: 1
   lockModeWhenClosed: 1
   hideCursorWhenClosed: 1
-  markDeadInRegistry: 1
   corpsePrefab: {fileID: 6786847747749218575, guid: 95acba4d9f72cf44cab0da366989dc85, type: 3}
   bodyBagPrefab: {fileID: 6786847747749218575, guid: 95acba4d9f72cf44cab0da366989dc85, type: 3}
   autoChooseByNpcTag: 1
@@ -1966,7 +1959,8 @@ MonoBehaviour:
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7caf72a7a0379ad4782b6c3b4695c85c, type: 2}
   m_sharedMaterial: {fileID: 2954810276948240373, guid: 7caf72a7a0379ad4782b6c3b4695c85c, type: 2}
-  m_fontSharedMaterials: []
+  m_fontSharedMaterials:
+  - {fileID: 2954810276948240373, guid: 7caf72a7a0379ad4782b6c3b4695c85c, type: 2}
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
@@ -4763,7 +4757,8 @@ MonoBehaviour:
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7caf72a7a0379ad4782b6c3b4695c85c, type: 2}
   m_sharedMaterial: {fileID: 2954810276948240373, guid: 7caf72a7a0379ad4782b6c3b4695c85c, type: 2}
-  m_fontSharedMaterials: []
+  m_fontSharedMaterials:
+  - {fileID: 2954810276948240373, guid: 7caf72a7a0379ad4782b6c3b4695c85c, type: 2}
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
@@ -5055,7 +5050,8 @@ MonoBehaviour:
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7caf72a7a0379ad4782b6c3b4695c85c, type: 2}
   m_sharedMaterial: {fileID: 2954810276948240373, guid: 7caf72a7a0379ad4782b6c3b4695c85c, type: 2}
-  m_fontSharedMaterials: []
+  m_fontSharedMaterials:
+  - {fileID: 2954810276948240373, guid: 7caf72a7a0379ad4782b6c3b4695c85c, type: 2}
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
@@ -7316,7 +7312,8 @@ MonoBehaviour:
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7caf72a7a0379ad4782b6c3b4695c85c, type: 2}
   m_sharedMaterial: {fileID: 2954810276948240373, guid: 7caf72a7a0379ad4782b6c3b4695c85c, type: 2}
-  m_fontSharedMaterials: []
+  m_fontSharedMaterials:
+  - {fileID: 2954810276948240373, guid: 7caf72a7a0379ad4782b6c3b4695c85c, type: 2}
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
