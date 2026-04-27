@@ -17797,7 +17797,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnergyHUDIconsUI
   iconContainer: {fileID: 1166295364}
   iconPrefab: {fileID: 1885675678775366150, guid: e2d5a108a966d934092d2f01fca14811, type: 3}
-  energySprite: {fileID: 21300000, guid: b47e5e900aad8344f8c4b8bf0a328d3c, type: 3}
+  energySprite: {fileID: 21300000, guid: a5bc015d44c9d964ea77d3e4954fe251, type: 3}
   showMaxAsEmpty: 1
   emptySprite: {fileID: 0}
   countText: {fileID: 0}
@@ -23855,7 +23855,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1579197383
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25675,7 +25675,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1683703230
 Transform:
   m_ObjectHideFlags: 0
@@ -28821,7 +28821,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f316bcf72e2a79641825b535bf47e4ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnergyManager
-  maxCharges: 3
+  maxCharges: 5
   currentCharges: 0
 --- !u!4 &1942742122
 Transform:
