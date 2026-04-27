@@ -3508,9 +3508,9 @@ MonoBehaviour:
   minTemperature: 38
   maxTemperature: 42
   temperatureDecimalPlaces: 1
-  useFixedResults: 0
-  fixedEyes: 0
-  fixedHands: 0
+  useFixedResults: 1
+  fixedEyes: 1
+  fixedHands: 1
   useFixedTemperature: 0
   fixedTemperature: 37
   currentTemperature: 0

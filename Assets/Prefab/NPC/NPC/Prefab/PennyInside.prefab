@@ -3597,8 +3597,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 201491de2c968bf4eb147541860c97c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NPCBodyCheckUISpriteSet
-  eyeNormal: {fileID: 21300000, guid: 0135e3d1b81285f48997c72fd061f8d8, type: 3}
-  eyeAbnormal: {fileID: 21300000, guid: b0b13fccedbbc0243acde6180912a042, type: 3}
-  handNormal: {fileID: 21300000, guid: 374f5d9702e6f8e40b920390c6e57387, type: 3}
-  handAbnormal: {fileID: 21300000, guid: 279a7f16bcc31014ea2d1e135f042805, type: 3}
+  eyeNormal: {fileID: 21300000, guid: e06edb256325a4a4faa94f748cd561c8, type: 3}
+  eyeAbnormal: {fileID: 21300000, guid: 0b61ccb2313f4574f8d1c1064d1c12d4, type: 3}
+  handNormal: {fileID: 21300000, guid: bf5383761a72f004fa65dd5cec09aea9, type: 3}
+  handAbnormal: {fileID: 21300000, guid: e2687afcc1523ae43b20eb1b8ce5a748, type: 3}
   tempIcon: {fileID: 0}

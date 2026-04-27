@@ -3541,8 +3541,8 @@ MonoBehaviour:
   maxTemperature: 45
   temperatureDecimalPlaces: 1
   useFixedResults: 0
-  fixedEyes: 0
-  fixedHands: 0
+  fixedEyes: 1
+  fixedHands: 1
   useFixedTemperature: 0
   fixedTemperature: 37
   currentTemperature: 0
@@ -3628,8 +3628,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 201491de2c968bf4eb147541860c97c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NPCBodyCheckUISpriteSet
-  eyeNormal: {fileID: 0}
-  eyeAbnormal: {fileID: 0}
-  handNormal: {fileID: 0}
-  handAbnormal: {fileID: 0}
+  eyeNormal: {fileID: 21300000, guid: 7179cb13c7f83544fa89145da4d73063, type: 3}
+  eyeAbnormal: {fileID: 21300000, guid: a9bee48fc6d86d24385e603b54dbfa61, type: 3}
+  handNormal: {fileID: 21300000, guid: a4a6ab0ae38211146bd8d4afad22256a, type: 3}
+  handAbnormal: {fileID: 21300000, guid: e2687afcc1523ae43b20eb1b8ce5a748, type: 3}
   tempIcon: {fileID: 0}

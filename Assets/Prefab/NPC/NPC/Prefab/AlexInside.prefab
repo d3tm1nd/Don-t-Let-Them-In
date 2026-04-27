@@ -3495,10 +3495,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.3607896
-  m_Height: 1.8510222
+  m_Radius: 0.04400135
+  m_Height: 0.26491657
   m_Direction: 1
-  m_Center: {x: -0.017657816, y: 0.910511, z: 0}
+  m_Center: {x: -0.00007811561, y: 0.11295788, z: -0.000917539}
 --- !u!114 &-3953437944636954855
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3516,11 +3516,11 @@ MonoBehaviour:
   minTemperature: 34
   maxTemperature: 36
   temperatureDecimalPlaces: 1
-  useFixedResults: 0
+  useFixedResults: 1
   fixedEyes: 0
   fixedHands: 0
-  useFixedTemperature: 0
-  fixedTemperature: 37
+  useFixedTemperature: 1
+  fixedTemperature: 38
   currentTemperature: 0
   eyeAbnormal: 0
   handAbnormal: 0
@@ -3604,8 +3604,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 201491de2c968bf4eb147541860c97c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NPCBodyCheckUISpriteSet
-  eyeNormal: {fileID: 0}
-  eyeAbnormal: {fileID: 0}
-  handNormal: {fileID: 0}
-  handAbnormal: {fileID: 0}
+  eyeNormal: {fileID: 21300000, guid: e06edb256325a4a4faa94f748cd561c8, type: 3}
+  eyeAbnormal: {fileID: 21300000, guid: 0b61ccb2313f4574f8d1c1064d1c12d4, type: 3}
+  handNormal: {fileID: 21300000, guid: bf5383761a72f004fa65dd5cec09aea9, type: 3}
+  handAbnormal: {fileID: 21300000, guid: e2687afcc1523ae43b20eb1b8ce5a748, type: 3}
   tempIcon: {fileID: 0}
